@@ -51,4 +51,9 @@ class User:
     
     def give_xp(self, amount):
         self.xp += amount
+        # if lvl 0 -> 1, don't apply the mod
+        if self.lvl == 0 and self.xp >= basexpreq:
+            self.lvl += 1
+        elif self.lvl > 0 and self.xp >= basexpreq * (basexpreqmod ** self.lvl):
+            self.lvl += 1
         self.save()
