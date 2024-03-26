@@ -1,6 +1,9 @@
 import json
 import os
 
+basexpreq = 100
+basexpreqmod = 1.5 # only applied at lvl 2+
+
 class User:
     def __init__(self):
         self.id = "undefined"
@@ -11,6 +14,7 @@ class User:
         self.pos = "norm"
         self.lvl = 0
         self.xp = 0
+        self.altids = []
 
     def save(self):
         with open(f"data/users/basehandler.json", "w") as f:
@@ -35,6 +39,7 @@ class User:
                 self.pos = data[id]["pos"]
                 self.lvl = data[id]["lvl"]
                 self.xp = data[id]["xp"]
+                self.altids = data[id]["altids"]
             except:
                 return False
             
