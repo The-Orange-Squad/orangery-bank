@@ -20,7 +20,7 @@ class User:
         with open(f"data/users/basehandler.json", "w") as f:
             json.dump(self.__dict__, f)
     
-    def load(self, id):
+    def load(self, id, returner=False):
         with open(f"data/users/basehandler.json", "r") as f:
             data = json.load(f)
             self.id = id
@@ -32,6 +32,8 @@ class User:
             data = conv
 
             try:
+                if returner:
+                    causeerror = 1 / 0
                 self.balance = data[id]["balance"]
                 self.inventory = data[id]["inventory"]
                 self.msgc = data[id]["msgc"]
@@ -41,9 +43,12 @@ class User:
                 self.xp = data[id]["xp"]
                 self.altids = data[id]["altids"]
             except:
-                return False
+                pass
             
-            return True
+            if returner:
+                return self
+            
+            return False
     
     def ban(self):
         self.banned = True
@@ -64,3 +69,11 @@ class User:
     
     def isaltof(self, id):
         return id in self.altids
+    
+    def syncwith(self, id_):
+        targetdata = self.load(id_, True)
+        mydata = self.__dict__
+
+        for key in targetdata.__dict__:
+            mydata[key] = targetdata.__dict__[key]
+        
