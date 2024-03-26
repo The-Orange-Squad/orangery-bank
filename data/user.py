@@ -57,3 +57,10 @@ class User:
         elif self.lvl > 0 and self.xp >= basexpreq * (basexpreqmod ** self.lvl):
             self.lvl += 1
         self.save()
+    
+    def set_alt(self, id):
+        self.altids.append(id)
+        self.save()
+    
+    def isaltof(self, id):
+        return id in self.altids
