@@ -6,6 +6,7 @@ from data.user import User
 from colorizer.colorizer import Colorizer
 from linker import linker
 import discord
+import discord.utils
 from discord.ext import commands
 from discord.commands import Option
 from discord.ui import Button, Select, View
@@ -34,6 +35,11 @@ async def balance(ctx, user: Option(User, "The user to check the balance of", re
     await ctx.defer()
     user_ = User()
     user_.load(user.id)
+    # Check if the author is a user of the bot and check if the author is banned
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
     if linker.needicon:
         hostguild = bot.get_guild(linker.hostguildid)
         mojis = hostguild.emojis
@@ -100,6 +106,10 @@ class ShopLRView(View):
 
 @bot.slash_command(name="shop", description="View the shop")
 async def shop_(ctx):
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
     await ctx.defer()
     embed = discord.Embed(title="Shop", description="Here's what's in the shop!")
     itemlist = shop.get_raw()
@@ -112,6 +122,10 @@ setupgroup = bot.create_group(name="setup", description="Setup the bot for your 
 @setupgroup.command(name="modrole", description="Set the moderator role for the server")
 @commands.has_permissions(administrator=True)
 async def modrole(ctx, role: discord.Role):
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
     await ctx.defer()
     setup = GuildSetup()
     setup.load(ctx.guild.id)
@@ -126,6 +140,10 @@ async def modrole(ctx, role: discord.Role):
 @setupgroup.command(name="adminrole", description="Set the administrator role for the server")
 @commands.has_permissions(administrator=True)
 async def adminrole(ctx, role: discord.Role):
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
     await ctx.defer()
     setup = GuildSetup()
     setup.load(ctx.guild.id)
@@ -151,6 +169,10 @@ async def adminrole_error(ctx, error):
     
 @setupgroup.command(name="give_money", description="Give money to a user")
 async def give_money(ctx, user: discord.Member, amount: int):
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
     setup = GuildSetup()
     setup.load(ctx.guild.id)
     if setup.settings["modrole"] == "undefined":
@@ -178,6 +200,37 @@ async def give_money(ctx, user: discord.Member, amount: int):
             if moji.id == linker.emojiid:
                 emoji = str(moji)
     embed = discord.Embed(title="Success!", description=f"Gave {amount} {emoji if linker.needicon else ''} {linker.currname} to {user.mention}", color=discord.Color.green())
+    await ctx.respond(embed=embed)
+
+async def shopAutoComplete(ctx: discord.AutocompleteContext):
+    return shop.get_processed().keys()
+
+@bot.slash_command(name="buy", description="Buy an item from the shop")
+async def buy(ctx, item: Option(str, "The item to buy", required=True, autocomplete=discord.utils.basic_autocomplete(shopAutoComplete)), amount: Option(int, "The amount of the item to buy", required=False, default=1)):
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    user = User()
+    user.load(ctx.author.id)
+    itemlist = shop.get_processed()
+    if not shop.is_valid_item(item):
+        embed = discord.Embed(title="Error!", description="Invalid item", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    if user.get_balance(ctx.guild.id) < itemlist[item]["price"] * amount:
+        embed = discord.Embed(title="Error!", description="You don't have enough money to buy this item", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    user.edit_money(-itemlist[item]["price"] * amount, ctx.guild.id)
+    user.add_item(item, amount, ctx.guild.id)
+    if linker.needicon:
+        hostguild = bot.get_guild(linker.hostguildid)
+        mojis = hostguild.emojis
+        for moji in mojis:
+            if moji.id == linker.emojiid:
+                emoji = str(moji)
+    embed = discord.Embed(title="Success!", description=f"Bought {amount} {shop.pair(item)} for {itemlist[item]['price'] * amount} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.green())
     await ctx.respond(embed=embed)
 
 

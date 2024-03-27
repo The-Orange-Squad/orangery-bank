@@ -39,6 +39,27 @@ class User:
                 self.pos = data.get("pos", "norm")
                 self.lvl = data.get("lvl", {})
                 self.xp = data.get("xp", {})
+                temp = {}
+                # for all dicts, convert the keys to int
+                for key in self.balance:
+                    temp[int(key)] = self.balance[key]
+                self.balance = temp
+                temp = {}
+                for key in self.inventory:
+                    temp[int(key)] = self.inventory[key]
+                self.inventory = temp
+                temp = {}
+                for key in self.msgc:
+                    temp[int(key)] = self.msgc[key]
+                self.msgc = temp
+                temp = {}
+                for key in self.lvl:
+                    temp[int(key)] = self.lvl[key]
+                self.lvl = temp
+                temp = {}
+                for key in self.xp:
+                    temp[int(key)] = self.xp[key]
+                self.xp = temp
                 if returner:
                     return self
                 return False
@@ -92,6 +113,8 @@ class User:
         self.save()
     
     def add_item(self, item, amount, guildid):
+        if not guildid in self.inventory:
+            self.inventory[guildid] = {}
         if item in self.inventory[guildid]:
             self.inventory[guildid][item] += amount
         else:
@@ -99,6 +122,8 @@ class User:
         self.save()
     
     def remove_item(self, item, amount, guildid):
+        if not guildid in self.inventory:
+            self.inventory[guildid] = {}
         if item in self.inventory[guildid]:
             self.inventory[guildid][item] -= amount
             if self.inventory[guildid][item] <= 0:
@@ -110,16 +135,26 @@ class User:
         return True
     
     def get_balance(self, guildid):
+        if not guildid in self.balance:
+            self.balance[guildid] = 0
         return self.balance[guildid]
     
     def get_inventory(self, guildid):
+        if not guildid in self.inventory:
+            self.inventory[guildid] = {}
         return self.inventory[guildid]
     
     def get_lvl(self, guildid):
+        if not guildid in self.lvl:
+            self.lvl[guildid] = 0
         return self.lvl[guildid]
     
     def get_xp(self, guildid):
+        if not guildid in self.xp:
+            self.xp[guildid] = 0
         return self.xp[guildid]
     
     def get_msgc(self, guildid):
+        if not guildid in self.msgc:
+            self.msgc[guildid] = 0
         return self.msgc[guildid]

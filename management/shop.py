@@ -57,3 +57,11 @@ class Shop:
 
     def get_raw(self):
         return self.items
+    
+    def pair(self, processed):
+        # find the item of the same id in the raw dict
+        if processed in self.processed:
+            # get the id of the item in the processed dict
+            id = list(self.processed.keys()).index(processed)
+            # get the item in the raw dict
+            return list(self.items.keys())[id]
