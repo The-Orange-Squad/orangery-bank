@@ -106,5 +106,7 @@ class User:
             if self.inventory[item] <= 0:
                 del self.inventory[item]
         self.save()
-    
-    def 
+
+    def unload(self):
+        self.__init__()
+        return True
