@@ -146,6 +146,37 @@ async def adminrole_error(ctx, error):
     if isinstance(error, commands.MissingPermissions):
         embed = discord.Embed(title="Error!", description="You need to have the administrator permission to use this command", color=discord.Color.red())
         await ctx.respond(embed=embed)
+    
+@setupgroup.command(name="give_money", description="Give money to a user")
+async def give_money(ctx, user: discord.Member, amount: int):
+    setup = GuildSetup(ctx.guild.id)
+    setup.load(ctx.guild.id)
+    if setup.settings["modrole"] == "undefined":
+        embed = discord.Embed(title="Error!", description="No moderator role has been set for this server", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    
+    if setup.settings["adminrole"] == "undefined":
+        embed = discord.Embed(title="Error!", description="No administrator role has been set for this server", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    
+    if setup.settings["modrole"] not in [role.id for role in ctx.author.roles] and setup.settings["adminrole"] not in [role.id for role in ctx.author.roles]:
+        embed = discord.Embed(title="Error!", description="You need to have the moderator role or the administrator role to use this command", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    
+    user_ = User()
+    user_.load(user.id)
+    user_.edit_money(amount, ctx.guild.id)
+    if linker.needicon:
+        hostguild = bot.get_guild(linker.hostguildid)
+        mojis = hostguild.emojis
+        for moji in mojis:
+            if moji.id == linker.emojiid:
+                emoji = str(moji)
+    embed = discord.Embed(title="Success!", description=f"Gave {amount} {emoji if linker.needicon else ''} to {user.mention}", color=discord.Color.green())
+    await ctx.respond(embed=embed)
 
 
 bot.run(TOKEN)
