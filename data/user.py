@@ -57,12 +57,20 @@ class User:
         # if lvl 0 -> 1, don't apply the mod
         if self.lvl == 0 and self.xp >= basexpreq:
             self.lvl += 1
+            self.save()
+            return "newlvl"
         elif self.lvl > 0 and self.xp >= basexpreq * (basexpreqmod ** self.lvl):
             self.lvl += 1
-        self.save()
+            self.save()
+            return "newlvl"
+        
 
     def set_alt(self, id):
         self.altids.append(id)
+        self.save()
+    
+    def remove_alt(self, id):
+        self.altids.remove(id)
         self.save()
 
     def isaltof(self, id):
@@ -80,3 +88,23 @@ class User:
     def erase(self):
         os.remove(f"data/users/{self.id}.json")
         return True
+    
+    def edit_money(self, amount):
+        self.balance += amount
+        self.save()
+    
+    def add_item(self, item, amount):
+        if item in self.inventory:
+            self.inventory[item] += amount
+        else:
+            self.inventory[item] = amount
+        self.save()
+    
+    def remove_item(self, item, amount):
+        if item in self.inventory:
+            self.inventory[item] -= amount
+            if self.inventory[item] <= 0:
+                del self.inventory[item]
+        self.save()
+    
+    def 
