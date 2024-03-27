@@ -97,8 +97,6 @@ class ShopLRView(View):
         await interaction.response.edit_message(embed=self.embed, view=self)
 
 
-    
-
 @bot.slash_command(name="shop", description="View the shop")
 async def shop_(ctx):
     await ctx.defer()

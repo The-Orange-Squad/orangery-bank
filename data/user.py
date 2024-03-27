@@ -36,11 +36,11 @@ class User:
                 self.lvl = data.get("lvl", 0)
                 self.xp = data.get("xp", 0)
                 self.altids = data.get("altids", [])
-                self.save()
                 if returner:
                     return self
                 return False
         else:
+            self.save()
             if returner:
                 return self
             return False
