@@ -6,14 +6,14 @@ import discord
 from discord.ext import commands
 from discord.commands import Option
 
+
+load_dotenv()
+TOKEN = os.getenv("TOKEN")
+
 shop = Shop()
 shop.process()
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 bot.remove_command("help")
-
-load_dotenv()
-
-TOKEN = os.getenv("TOKEN")
 
 bot.run(TOKEN)
