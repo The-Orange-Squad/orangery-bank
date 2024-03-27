@@ -15,6 +15,11 @@ class User:
         self.lvl = 0
         self.xp = 0
         self.altids = []
+    
+    def exists(self, id):
+        with open(f"data/users/basehandler.json", "r") as f:
+            data = json.load(f)
+            return str(id) in data
 
     def save(self):
         with open(f"data/users/basehandler.json", "w") as f:
