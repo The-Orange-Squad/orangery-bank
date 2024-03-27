@@ -44,7 +44,7 @@ async def balance(ctx, user: Option(User, "The user to check the balance of", re
     await ctx.respond(embed=embed)
 
 class ShopLRView(View):
-    def __init__(self, ctx, embed, list_):
+    def __init__(self, ctx, embed, list_, guildid):
         super().__init__(timeout=None)
         self.ctx = ctx
         self.embed = embed
@@ -55,7 +55,7 @@ class ShopLRView(View):
         user = User()
         user.load(ctx.author.id)
         self.user = user
-        self.inventory = user.inventory
+        self.inventory = user.inventory[guildid]
 
     async def pre_rendder(self):
         self.embed.clear_fields()
@@ -103,7 +103,7 @@ async def shop_(ctx):
     await ctx.defer()
     embed = discord.Embed(title="Shop", description="Here's what's in the shop!")
     itemlist = shop.get_raw()
-    lrv = ShopLRView(ctx, embed, itemlist)
+    lrv = ShopLRView(ctx, embed, itemlist, ctx.guild.id)
     await lrv.pre_rendder()
     await ctx.respond(embed=embed, view=lrv)
 
@@ -112,7 +112,8 @@ setupgroup = bot.create_group(name="setup", description="Setup the bot for your 
 @setupgroup.command(name="modrole", description="Set the moderator role for the server")
 @commands.has_permissions(administrator=True)
 async def modrole(ctx, role: discord.Role):
-    setup = GuildSetup(ctx.guild.id)
+    await ctx.defer()
+    setup = GuildSetup()
     setup.load(ctx.guild.id)
     setup.set(ctx.guild.id, "modrole", role.id)
     try:
@@ -125,7 +126,8 @@ async def modrole(ctx, role: discord.Role):
 @setupgroup.command(name="adminrole", description="Set the administrator role for the server")
 @commands.has_permissions(administrator=True)
 async def adminrole(ctx, role: discord.Role):
-    setup = GuildSetup(ctx.guild.id)
+    await ctx.defer()
+    setup = GuildSetup()
     setup.load(ctx.guild.id)
     setup.set(ctx.guild.id, "adminrole", role.id)
     try:
@@ -149,7 +151,7 @@ async def adminrole_error(ctx, error):
     
 @setupgroup.command(name="give_money", description="Give money to a user")
 async def give_money(ctx, user: discord.Member, amount: int):
-    setup = GuildSetup(ctx.guild.id)
+    setup = GuildSetup()
     setup.load(ctx.guild.id)
     if setup.settings["modrole"] == "undefined":
         embed = discord.Embed(title="Error!", description="No moderator role has been set for this server", color=discord.Color.red())

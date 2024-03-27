@@ -1,2 +1,5 @@
 .env
 __pycache__/
+data/users/*
+data/guilds/*
+!.gitkeep
