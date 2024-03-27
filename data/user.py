@@ -84,7 +84,11 @@ class User:
         return True
     
     def edit_money(self, amount, guildid):
+        if not guildid in self.balance:
+            self.balance[guildid] = 0
         self.balance[guildid] += amount
+        if self.balance[guildid] < 0:
+            self.balance[guildid] = 0
         self.save()
     
     def add_item(self, item, amount, guildid):
@@ -95,7 +99,7 @@ class User:
         self.save()
     
     def remove_item(self, item, amount, guildid):
-        if item in self.inventory:
+        if item in self.inventory[guildid]:
             self.inventory[guildid][item] -= amount
             if self.inventory[guildid][item] <= 0:
                 del self.inventory[guildid][item]
