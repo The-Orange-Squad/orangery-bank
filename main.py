@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 from management.shop import Shop
+from management.modlist import GuildSetup
 from data.user import User
 from colorizer.colorizer import Colorizer
 from linker import linker
@@ -105,6 +106,46 @@ async def shop_(ctx):
     lrv = ShopLRView(ctx, embed, itemlist)
     await lrv.pre_rendder()
     await ctx.respond(embed=embed, view=lrv)
+
+setupgroup = bot.create_group(name="setup", description="Setup the bot for your server")
+
+@setupgroup.command(name="modrole", description="Set the moderator role for the server")
+@commands.has_permissions(administrator=True)
+async def modrole(ctx, role: discord.Role):
+    setup = GuildSetup(ctx.guild.id)
+    setup.load(ctx.guild.id)
+    setup.set(ctx.guild.id, "modrole", role.id)
+    try:
+        embed = discord.Embed(title="Success!", description=f"Set the moderator role to {role.mention}", color=discord.Color.green())
+    except:
+        embed = discord.Embed(title="Failed!", description="An error occurred while setting the moderator role", color=discord.Color.red())
+        setup.set(ctx.guild.id, "modrole", "undefined")
+    await ctx.respond(embed=embed)
+
+@setupgroup.command(name="adminrole", description="Set the administrator role for the server")
+@commands.has_permissions(administrator=True)
+async def adminrole(ctx, role: discord.Role):
+    setup = GuildSetup(ctx.guild.id)
+    setup.load(ctx.guild.id)
+    setup.set(ctx.guild.id, "adminrole", role.id)
+    try:
+        embed = discord.Embed(title="Success!", description=f"Set the administrator role to {role.mention}", color=discord.Color.green())
+    except:
+        embed = discord.Embed(title="Failed!", description="An error occurred while setting the administrator role", color=discord.Color.red())
+        setup.set(ctx.guild.id, "adminrole", "undefined")
+    await ctx.respond(embed=embed)
+
+@modrole.error
+async def modrole_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        embed = discord.Embed(title="Error!", description="You need to have the administrator permission to use this command", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+
+@adminrole.error
+async def adminrole_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        embed = discord.Embed(title="Error!", description="You need to have the administrator permission to use this command", color=discord.Color.red())
+        await ctx.respond(embed=embed)
 
 
 bot.run(TOKEN)
