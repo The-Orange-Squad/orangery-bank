@@ -25,6 +25,13 @@ async def on_ready():
     print(colorizer.colorize("Connected to the following guilds: ", "yellow"))
     for guilds in bot.guilds:
         print(guilds.name + " | " + colorizer.colorize(str(guilds.id), "cyan"))
+    
+@bot.slash_command(name="balance", description="Check the balance of the specified user")
+async def balance(ctx, user: Option(User, "The user to check the balance of", required=True)):
+    user_ = User()
+    user_.load(user.id)
+    embed = discord.Embed(title=f"{user.mention}'s balance", description=f"Balance: {user.balance}")
+    await ctx.send(embed=embed)
 
 
 bot.run(TOKEN)
