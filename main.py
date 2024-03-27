@@ -16,4 +16,9 @@ shop.process()
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 bot.remove_command("help")
 
+@bot.event
+async def on_ready():
+    print(f"Successfully logged in as {bot.user}")
+    
+
 bot.run(TOKEN)
