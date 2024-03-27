@@ -72,8 +72,15 @@ class User:
         self.savefor(id_, True)
         return True
     
-    def erase(self):
-        os.remove(f"data/users/{self.id}.json")
+    def erase(self, guildid=None):
+        if guildid:
+            del self.balance[guildid]
+            del self.inventory[guildid]
+            del self.msgc[guildid]
+            del self.lvl[guildid]
+            del self.xp[guildid]
+        else:
+            os.remove(f"data/users/{self.id}.json")
         return True
     
     def edit_money(self, amount, guildid):
@@ -97,3 +104,18 @@ class User:
     def unload(self):
         self.__init__()
         return True
+    
+    def get_balance(self, guildid):
+        return self.balance[guildid]
+    
+    def get_inventory(self, guildid):
+        return self.inventory[guildid]
+    
+    def get_lvl(self, guildid):
+        return self.lvl[guildid]
+    
+    def get_xp(self, guildid):
+        return self.xp[guildid]
+    
+    def get_msgc(self, guildid):
+        return self.msgc[guildid]
