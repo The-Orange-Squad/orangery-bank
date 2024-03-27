@@ -1,3 +1,7 @@
+
+
+
+
 class Shop:
     def __init__(self):
         self.items = {
@@ -31,26 +35,25 @@ class Shop:
             }
         }
         self.processed = {}
-
-        def process():
-            # this removes the first two characters of the key, which is the emoji and a space
-            for item in self.items:
-                self.processed[item[2:]] = self.items[item]
-        
-        def process_single(item):
-            return item[2:]
-        
-        def is_valid_item(item):
-            return item in self.processed
-        
-        def get_price(item):
-            return self.processed[item]["price"]
-        
-        def get_desc(item):
-            return self.processed[item]["desc"]
-        
-        def get_processed():
-            return self.processed
+    def process(self):
+        # this removes the first two characters of the key, which is the emoji and a space
+        for item in self.items:
+            self.processed[item[2:]] = self.items[item]
     
-        def get_raw():
-            return self.items
+    def process_single(self, item):
+        return item[2:]
+    
+    def is_valid_item(self, item):
+        return item in self.processed
+    
+    def get_price(self, item):
+        return self.processed[item]["price"]
+    
+    def get_desc(self, item):
+        return self.processed[item]["desc"]
+    
+    def get_processed(self):
+        return self.processed
+
+    def get_raw(self):
+        return self.items
