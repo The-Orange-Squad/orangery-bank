@@ -233,5 +233,58 @@ async def buy(ctx, item: Option(str, "The item to buy", required=True, autocompl
     embed = discord.Embed(title="Success!", description=f"Bought {amount} {shop.pair(item)} for {itemlist[item]['price'] * amount} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.green())
     await ctx.respond(embed=embed)
 
+class invLRView(View):
+    def __init__(self, ctx, embed, list_):
+        super().__init__(timeout=None)
+        self.ctx = ctx
+        self.embed = embed
+        self.list = list_
+        self.page = 0
+        keys_list = list(list_.keys())
+        self.pages = [{key: list_[key] for key in keys_list[i:i+5]} for i in range(0, len(keys_list), 5)]
+        user = User()
+        user.load(ctx.author.id)
+        self.user = user
+
+    async def pre_rendder(self):
+        self.embed.clear_fields()
+        for item in self.pages[self.page]:
+            self.embed.add_field(name=f"{shop.pair(item)} | Amount: {self.list[item]}", value=shop.get_desc(item), inline=False)
+        return self.embed
+    
+    @discord.ui.button(label="⬅️", style=discord.ButtonStyle.primary)
+    async def left(self, button: discord.ui.Button, interaction: discord.Interaction):
+        self.page -= 1
+        if self.page < 0:
+            self.page = len(self.pages) - 1
+        self.embed.clear_fields()
+        for item in self.pages[self.page]:
+            self.embed.add_field(name=f"{shop.pair(item)} | Amount: {self.list[item]}", value=shop.get_desc(item), inline=False)
+        await interaction.response.edit_message(embed=self.embed, view=self)
+
+    @discord.ui.button(label="➡️", style=discord.ButtonStyle.primary)
+    async def right(self, button: discord.ui.Button, interaction: discord.Interaction):
+        self.page += 1
+        if self.page >= len(self.pages):
+            self.page = 0
+        self.embed.clear_fields()
+        for item in self.pages[self.page]:
+            self.embed.add_field(name=f"{shop.pair(item)} | Amount: {self.list[item]}", value=shop.get_desc(item), inline=False)
+        await interaction.response.edit_message(embed=self.embed, view=self)
+
+@bot.slash_command(name="inventory", description="View the inventory of the specified user")
+async def inventory(ctx, user: Option(User, "The user to check the inventory of", required=True)):
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    await ctx.defer()
+    user_ = User()
+    user_.load(user.id)
+    embed = discord.Embed(title=f"{user.name}'s inventory", description="Here's what's in the inventory!")
+    lrv = invLRView(ctx, embed, user_.get_inventory(ctx.guild.id))
+    await lrv.pre_rendder()
+    await ctx.respond(embed=embed, view=lrv)
+
 
 bot.run(TOKEN)
