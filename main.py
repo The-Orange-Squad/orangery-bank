@@ -40,7 +40,7 @@ async def balance(ctx, user: Option(User, "The user to check the balance of", re
         for moji in mojis:
             if moji.id == linker.emojiid:
                 emoji = str(moji)
-    embed = discord.Embed(title=f"{user.name}'s balance", description=f"Balance: {user_.balance} {emoji if linker.needicon else ''}")
+    embed = discord.Embed(title=f"{user.name}'s balance", description=f"Balance: {user_.get_balance(ctx.guild.id)} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.random())
     await ctx.respond(embed=embed)
 
 class ShopLRView(View):
@@ -177,7 +177,7 @@ async def give_money(ctx, user: discord.Member, amount: int):
         for moji in mojis:
             if moji.id == linker.emojiid:
                 emoji = str(moji)
-    embed = discord.Embed(title="Success!", description=f"Gave {amount} {emoji if linker.needicon else ''} to {user.mention}", color=discord.Color.green())
+    embed = discord.Embed(title="Success!", description=f"Gave {amount} {emoji if linker.needicon else ''} {linker.currname} to {user.mention}", color=discord.Color.green())
     await ctx.respond(embed=embed)
 
 
