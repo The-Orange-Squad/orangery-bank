@@ -31,8 +31,14 @@ async def on_ready():
 async def balance(ctx, user: Option(User, "The user to check the balance of", required=True)):
     user_ = User()
     user_.load(user.id)
-    embed = discord.Embed(title=f"{user.mention}'s balance", description=f"Balance: {user.balance}")
-    await ctx.send(embed=embed)
+    if linker.needicon:
+        hostguild = bot.get_guild(linker.hostguildid)
+        mojis = hostguild.emojis
+        for moji in mojis:
+            if moji.id == linker.emojiid:
+                emoji = str(moji)
+    embed = discord.Embed(title=f"{user.name}'s balance", description=f"Balance: {user_.balance} {emoji if linker.needicon else ''}")
+    await ctx.respond(embed=embed)
 
 
 bot.run(TOKEN)
