@@ -3,6 +3,7 @@ import os
 from management.shop import Shop
 from data.user import User
 from colorizer.colorizer import Colorizer
+from linker import linker
 import discord
 from discord.ext import commands
 from discord.commands import Option
