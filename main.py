@@ -348,7 +348,7 @@ async def rank(ctx, user: Option(User, "The user to check the rank of", required
         embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
     user_ = User()
     user_.load(user.id)
-    embed = discord.Embed(title=f"{user.name}'s rank", description=f"Level: {user_.get_lvl(ctx.guild.id)}\nXP: {user_.get_xp(ctx.guild.id)}", color=discord.Color.random())
+    embed = discord.Embed(title=f"{user.name}'s rank", description=f"Level: {user_.get_lvl(ctx.guild.id)}\nXP: {user_.get_xp(ctx.guild.id)}\nMessage Count: {user_.get_msgc(ctx.guild.id)}", color=discord.Color.random())
     await ctx.respond(embed=embed)
 
 @bot.event
