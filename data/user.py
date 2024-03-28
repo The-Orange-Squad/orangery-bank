@@ -84,6 +84,11 @@ class User:
         self.save()
 
     def give_xp(self, amount, guildid):
+
+        if not guildid in self.xp:
+            self.xp[guildid] = 0
+        if not guildid in self.lvl:
+            self.lvl[guildid] = 0
         self.xp[guildid] += amount
         # if lvl 0 -> 1, don't apply the mod
         if self.lvl[guildid] == 0 and self.xp[guildid] >= basexpreq:
@@ -173,3 +178,9 @@ class User:
         if not guildid in self.modifiers:
             self.modifiers[guildid] = 1
         return self.modifiers[guildid]
+
+    def give_msgc(self, guildid):
+        if not guildid in self.msgc:
+            self.msgc[guildid] = 0
+        self.msgc[guildid] += 1
+        self.save()

@@ -10,6 +10,7 @@ import discord.utils
 from discord.ext import commands
 from discord.commands import Option
 from discord.ui import Button, Select, View
+from messagecounter.msgc import LastMessage
 import random
 
 
@@ -23,6 +24,8 @@ bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 bot.remove_command("help")
 
 colorizer = Colorizer()
+LastMessage = LastMessage()
+LastMessage.load()
 
 @bot.event
 async def on_ready():
@@ -357,7 +360,13 @@ async def on_message(message):
         return
     user = User()
     user.load(message.author.id)
-    user.msgc[message.guild.id] += 1
+    user.give_msgc(message.guild.id)
     user.save()
+    if LastMessage.is_passed(message.author.id, linker.msgtimeout, message.guild.id):
+        user.give_xp(random.randint(linker.xprange[0], linker.xprange[1]), message.guild.id)
+        print(f"Gave {random.randint(linker.xprange[0], linker.xprange[1])} xp to {message.author.name}")
+        LastMessage.set_lastmsgtime(message.author.id, message.guild.id)
+    else:
+        pass
 
 bot.run(TOKEN)

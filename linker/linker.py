@@ -4,3 +4,4 @@ emojiid = 1222596550417580142
 currname = "Gold"
 
 msgtimeout = 3
+xprange = [15, 25]
