@@ -315,7 +315,6 @@ async def sell(ctx, item: Option(str, "The item to sell", required=True, autocom
     pricelist = [random.randint(int(price * 0.5), int(price * 1.5)) for i in range(amount)]
     price = sum(pricelist)
     price = price * user.get_mod(ctx.guild.id)
-    print(colorizer.colorize(str(price), "green")), colorizer.colorize(str(normalprice), "red")
 
     user.edit_money(price, ctx.guild.id)
     user.remove_item(item, amount, ctx.guild.id)
@@ -330,7 +329,6 @@ async def sell(ctx, item: Option(str, "The item to sell", required=True, autocom
     embed = discord.Embed(title="Success!", description=f"Sold {amount} {shop.pair(item)} for {price} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.green())
     pricediff = price - normalprice
     abspricediff = abs(pricediff)
-    print(pricediff)
     # the price difference determines whether the user gets more or less money than the average price
     if pricediff > 0:
         temptext = "more than"
