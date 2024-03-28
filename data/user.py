@@ -84,7 +84,6 @@ class User:
         self.save()
 
     def give_xp(self, amount, guildid):
-
         if not guildid in self.xp:
             self.xp[guildid] = 0
         if not guildid in self.lvl:
@@ -99,6 +98,8 @@ class User:
             self.lvl[guildid] += 1
             self.save()
             return "newlvl"
+        self.save()
+        return False
 
     def syncwith(self, id_):
         self.savefor(id_, True)

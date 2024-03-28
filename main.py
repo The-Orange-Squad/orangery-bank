@@ -363,9 +363,24 @@ async def on_message(message):
     user.give_msgc(message.guild.id)
     user.save()
     if LastMessage.is_passed(message.author.id, linker.msgtimeout, message.guild.id):
-        user.give_xp(random.randint(linker.xprange[0], linker.xprange[1]), message.guild.id)
-        print(f"Gave {random.randint(linker.xprange[0], linker.xprange[1])} xp to {message.author.name}")
+        xprandom = random.randint(linker.xprange[0], linker.xprange[1])
+        resp = user.give_xp(xprandom, message.guild.id)
+        print(f"Gave {xprandom} xp to {message.author.name}")
         LastMessage.set_lastmsgtime(message.author.id, message.guild.id)
+        if resp == "newlvl":
+            embed = discord.Embed(title="Level Up!", description=f"{message.author.mention} has leveled up to level {user.get_lvl(message.guild.id)}!", color=discord.Color.green())
+            # Formula: Level * random(reward range min to reward range max) * (user modifier / 2) = reward
+            reward = round(user.get_lvl(message.guild.id) * random.randint(linker.rewardrange[0], linker.rewardrange[1]) * (user.get_mod(message.guild.id) / 2))
+            user.edit_money(reward, message.guild.id)
+            if linker.needicon:
+                hostguild = bot.get_guild(linker.hostguildid)
+                mojis = hostguild.emojis
+                for moji in mojis:
+                    if moji.id == linker.emojiid:
+                        emoji = str(moji)
+            
+            embed.add_field(name="Reward", value=f"Received {reward} {emoji if linker.needicon else ''} {linker.currname}", inline=False)
+            await message.channel.send(embed=embed)
     else:
         pass
 

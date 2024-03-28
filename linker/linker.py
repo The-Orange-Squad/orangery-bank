@@ -5,3 +5,4 @@ currname = "Gold"
 
 msgtimeout = 3
 xprange = [15, 25]
+rewardrange = [25, 100]
