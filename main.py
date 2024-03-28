@@ -340,4 +340,15 @@ async def sell(ctx, item: Option(str, "The item to sell", required=True, autocom
     embed.set_footer(text=f"You sold this for {price} {linker.currname}, which is {str(abspricediff) + ' ' if temptext != 'the same as' else ''}{linker.currname + ' ' if temptext != 'the same as' else ''}{temptext} the average price")
     await ctx.respond(embed=embed)
 
+@bot.slash_command(name="rank", description="Check the rank of the specified user")
+async def rank(ctx, user: Option(User, "The user to check the rank of", required=True)):
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    user_ = User()
+    user_.load(user.id)
+    embed = discord.Embed(title=f"{user.name}'s rank", description=f"Level: {user_.get_lvl(ctx.guild.id)}\nXP: {user_.get_xp(ctx.guild.id)}", color=discord.Color.random())
+    await ctx.respond(embed=embed)
+
 bot.run(TOKEN)
