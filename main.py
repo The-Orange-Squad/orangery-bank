@@ -10,6 +10,7 @@ import discord.utils
 from discord.ext import commands
 from discord.commands import Option
 from discord.ui import Button, Select, View
+import random
 
 
 load_dotenv()
@@ -286,5 +287,59 @@ async def inventory(ctx, user: Option(User, "The user to check the inventory of"
     await lrv.pre_rendder()
     await ctx.respond(embed=embed, view=lrv)
 
+
+@bot.slash_command(name="sell", description="Sell an item from the inventory")
+async def sell(ctx, item: Option(str, "The item to sell", required=True, autocomplete=discord.utils.basic_autocomplete(shopAutoComplete)), amount: Option(int, "The amount of the item to sell", required=False, default=1)):
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    user = User()
+    user.load(ctx.author.id)
+    itemlist = shop.get_processed()
+    # The amount of money given for each item sold is randomized, it's between 50% and 150% of the item's price. If there is a modifier the user has, the amount of money given is multiplied by the modifier
+    if not shop.is_valid_item(item):
+        embed = discord.Embed(title="Error!", description="Invalid item", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    if item not in user.inventory[ctx.guild.id]:
+        embed = discord.Embed(title="Error!", description="You don't own this item", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    
+    
+    # ultramegacomplexedunintellegible code
+    # ALBERT EINSTEIN WOULD BE PROUD
+    price = itemlist[item]["price"]
+    normalprice = price * amount
+    pricelist = [random.randint(int(price * 0.5), int(price * 1.5)) for i in range(amount)]
+    price = sum(pricelist)
+    price = price * user.get_mod(ctx.guild.id)
+    print(colorizer.colorize(str(price), "green")), colorizer.colorize(str(normalprice), "red")
+
+    user.edit_money(price, ctx.guild.id)
+    user.remove_item(item, amount, ctx.guild.id)
+
+    if linker.needicon:
+        hostguild = bot.get_guild(linker.hostguildid)
+        mojis = hostguild.emojis
+        for moji in mojis:
+            if moji.id == linker.emojiid:
+                emoji = str(moji)
+
+    embed = discord.Embed(title="Success!", description=f"Sold {amount} {shop.pair(item)} for {price} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.green())
+    pricediff = price - normalprice
+    abspricediff = abs(pricediff)
+    print(pricediff)
+    # the price difference determines whether the user gets more or less money than the average price
+    if pricediff > 0:
+        temptext = "more than"
+    elif pricediff < 0:
+        temptext = "less than"
+    else:
+        temptext = "the same as"
+    
+    embed.set_footer(text=f"You sold this for {price} {linker.currname}, which is {str(abspricediff) + ' ' if temptext != 'the same as' else ''}{linker.currname + ' ' if temptext != 'the same as' else ''}{temptext} the average price")
+    await ctx.respond(embed=embed)
 
 bot.run(TOKEN)

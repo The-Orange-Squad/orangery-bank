@@ -14,6 +14,7 @@ class User:
         self.pos = "norm"
         self.lvl = {}
         self.xp = {}
+        self.modifiers = {}
 
     def save(self):
         with open(f"data/users/{self.id}.json", "w") as f:
@@ -39,6 +40,7 @@ class User:
                 self.pos = data.get("pos", "norm")
                 self.lvl = data.get("lvl", {})
                 self.xp = data.get("xp", {})
+                self.modifiers = data.get("modifiers", {})
                 temp = {}
                 # for all dicts, convert the keys to int
                 for key in self.balance:
@@ -60,6 +62,10 @@ class User:
                 for key in self.xp:
                     temp[int(key)] = self.xp[key]
                 self.xp = temp
+                temp = {}
+                for key in self.modifiers:
+                    temp[int(key)] = self.modifiers[key]
+                self.modifiers = temp
                 if returner:
                     return self
                 return False
@@ -158,3 +164,12 @@ class User:
         if not guildid in self.msgc:
             self.msgc[guildid] = 0
         return self.msgc[guildid]
+
+    def set_mod(self, guildid, mod):
+        self.modifiers[guildid] = mod
+        self.save()
+    
+    def get_mod(self, guildid):
+        if not guildid in self.modifiers:
+            self.modifiers[guildid] = 1
+        return self.modifiers[guildid]
