@@ -486,6 +486,35 @@ async def coinflip(ctx, bet: int, side: Option(str, "The side to bet on", requir
         embed = discord.Embed(title="Failure!", description=f"The coin landed on {result}! You lost {bet} {linker.currname}", color=discord.Color.red())
     await ctx.respond(embed=embed)
 
+@bot.slash_command(name='dice', description='Roll a dice')
+async def dice(ctx, bet: int, number: Option(int, "The number to bet on", required=True)):
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    user = User()
+    user.load(ctx.author.id)
+    if user.get_balance(ctx.guild.id) < bet:
+        embed = discord.Embed(title="Error!", description="You don't have enough money to bet this amount", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    if bet < 1:
+        embed = discord.Embed(title="Error!", description="You can't bet less than 1", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    if number not in range(1, 7):
+        embed = discord.Embed(title="Error!", description="You can only bet on numbers between 1 and 6", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    result = random.randint(1, 6)
+    user.edit_money(-bet, ctx.guild.id)
+    if result == number:
+        user.edit_money(bet * 2, ctx.guild.id)
+        embed = discord.Embed(title="Success!", description=f"The dice landed on {result}! You won {bet * 2} {linker.currname}", color=discord.Color.green())
+    else:
+        embed = discord.Embed(title="Failure!", description=f"The dice landed on {result}! You lost {bet} {linker.currname}", color=discord.Color.red())
+    await ctx.respond(embed=embed)
+
 
 
 
