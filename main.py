@@ -542,7 +542,7 @@ async def view_inventory(ctx, user: discord.User):
     await ctx.respond(embed=embed, view=lrv)
 
 @bot.slash_command(name="leaderboard", description="View the leaderboard of the server")
-async def leaderboard(ctx):
+async def leaderboard(ctx, option: Option(str, "The leaderboard option", required=False, choices=["balance", "level"])):
     # This takes a while to load, so we defer the response
     await ctx.defer()
     author = User()
@@ -560,15 +560,25 @@ async def leaderboard(ctx):
         if not id in servermembers:
             continue
         user_.load(id)
-        templb[user_.get_balance(ctx.guild.id)] = id
-    lb = dict(sorted(templb.items(), reverse=True))
-    embed = discord.Embed(title=f"{ctx.guild.name}'s Leaderboard", description="Here are the top 10 users in the server")
+        if option == "balance":
+            templb[user_.get_balance(ctx.guild.id)] = id
+        elif option == "level":
+            templb[user_.get_lvl(ctx.guild.id)] = id
+    if option == "balance":
+        lb = dict(sorted(templb.items(), reverse=True))
+        embed = discord.Embed(title=f"{ctx.guild.name}'s Balance Leaderboard", description="Here are the top 10 users in the server based on balance")
+    elif option == "level":
+        lb = dict(sorted(templb.items(), key=lambda x: x[0], reverse=True))
+        embed = discord.Embed(title=f"{ctx.guild.name}'s Level Leaderboard", description="Here are the top 10 users in the server based on level")
     i = 0
     for key, value in lb.items():
         if i == 10:
             break
         user = bot.get_user(value)
-        embed.add_field(name=f"{user.name}", value=f"Balance: {key} {constructCurrName()}", inline=False)
+        if option == "balance":
+            embed.add_field(name=f"{user.name}", value=f"Balance: {key} {constructCurrName()}", inline=False)
+        elif option == "level":
+            embed.add_field(name=f"{user.name}", value=f"Level: {key}", inline=False)
         i += 1
     await ctx.respond(embed=embed)
 
