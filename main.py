@@ -414,6 +414,15 @@ async def on_message(message):
     user.save()
     if LastMessage.is_passed(message.author.id, linker.msgtimeout, message.guild.id):
         xprandom = random.randint(linker.xprange[0], linker.xprange[1])
+        if linker.effortboost:
+            # Based on the amount of characters in the message, determine the multiplier. Required characters: eb_req, max multiplier: eb_max
+            if len(message.content) >= linker.eb_req:
+                # also multiply the random xp by the multiplier
+                mul = len(message.content) / linker.eb_req
+                if mul > linker.eb_max:
+                    mul = linker.eb_max
+                
+                xprandom = round(xprandom * mul)
         resp = user.give_xp(xprandom, message.guild.id)
         print(f"Gave {xprandom} xp to {message.author.name}")
         LastMessage.set_lastmsgtime(message.author.id, message.guild.id)
