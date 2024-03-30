@@ -4,3 +4,4 @@ data/users/*
 data/guilds/*
 !.gitkeep
 data/lastmsg.json
+data/rewardroles.json

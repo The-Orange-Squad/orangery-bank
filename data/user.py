@@ -92,10 +92,14 @@ class User:
         # if lvl 0 -> 1, don't apply the mod
         if self.lvl[guildid] == 0 and self.xp[guildid] >= basexpreq:
             self.lvl[guildid] += 1
+            # Remove all user xp
+            self.xp[guildid] = 0
             self.save()
             return "newlvl"
         elif self.lvl[guildid] > 0 and self.xp[guildid] >= basexpreq * (basexpreqmod ** self.lvl[guildid]):
             self.lvl[guildid] += 1
+            # Remove all user xp
+            self.xp[guildid] = 0
             self.save()
             return "newlvl"
         self.save()
@@ -185,3 +189,8 @@ class User:
             self.msgc[guildid] = 0
         self.msgc[guildid] += 1
         self.save()
+    
+    def getxpreq(self, level):
+        if level == 0:
+            return basexpreq
+        return basexpreq * (basexpreqmod ** level)

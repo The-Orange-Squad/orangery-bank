@@ -19,17 +19,31 @@ class RewardRoles:
     def save(self):
         with open("data/rewardroles.json", "w") as f:
             json.dump(self.roles, f)
+    
+    def init(self, guild):
+        if guild not in self.roles:
+            self.roles[guild] = {}
+            self.save()
 
     def add(self, level, role, guild):
+        if guild not in self.roles:
+            self.roles[guild] = {}
         self.roles[guild][level] = role
         self.save()
     
     def remove(self, level, guild):
+        if guild not in self.roles:
+            self.roles[guild] = {}
+            return False
         del self.roles[guild][level]
         self.save()
     
     def get(self, level, guild):
+        if guild not in self.roles:
+            return False
         return self.roles[guild][level]
     
     def hasreward(self, level, guild):
+        if guild not in self.roles:
+            self.roles[guild] = {}
         return level in self.roles[guild]

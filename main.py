@@ -432,8 +432,11 @@ async def on_message(message):
             embed.add_field(name="Reward", value=f"Received {reward} {emoji if linker.needicon else ''} {linker.currname}", inline=False)
             if rr.hasreward(user.get_lvl(message.guild.id), message.guild.id):
                 role = rr.get(user.get_lvl(message.guild.id), message.guild.id)
-                await message.author.add_roles(discord.utils.get(message.guild.roles, id=role))
-                embed.add_field(name="Reward Role", value=f"As an additional reward, you have been given the role {discord.utils.get(message.guild.roles, id=role).mention}", inline=False)
+                try:
+                    await message.author.add_roles(discord.utils.get(message.guild.roles, id=role))
+                    embed.add_field(name="Reward Role", value=f"As an additional reward, you have been given the role {discord.utils.get(message.guild.roles, id=role).mention}", inline=False)
+                except:
+                    embed.add_field(name="Reward Role", value=f"We wanted to give you the role {discord.utils.get(message.guild.roles, id=role).mention} as an additional reward, but an error occurred", inline=False)
             await message.channel.send(embed=embed)
     else:
         pass
