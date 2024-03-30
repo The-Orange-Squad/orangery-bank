@@ -461,6 +461,32 @@ async def unban(ctx, user: discord.Member):
         embed = discord.Embed(title="Failed!", description="An error occurred while unbanning the user", color=discord.Color.red())
     await ctx.respond(embed=embed)
 
+@bot.slash_command(name='coinflip', description='Flip a coin')
+async def coinflip(ctx, bet: int, side: Option(str, "The side to bet on", required=True, choices=["Heads", "Tails"])):
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    user = User()
+    user.load(ctx.author.id)
+    if user.get_balance(ctx.guild.id) < bet:
+        embed = discord.Embed(title="Error!", description="You don't have enough money to bet this amount", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    if bet < 1:
+        embed = discord.Embed(title="Error!", description="You can't bet less than 1", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    user.edit_money(-bet, ctx.guild.id)
+    result = random.choice(["Heads", "Tails"])
+    if result == side:
+        user.edit_money(bet * 2, ctx.guild.id)
+        embed = discord.Embed(title="Success!", description=f"The coin landed on {result}! You won {bet} {linker.currname}", color=discord.Color.green())
+    else:
+        embed = discord.Embed(title="Failure!", description=f"The coin landed on {result}! You lost {bet} {linker.currname}", color=discord.Color.red())
+    await ctx.respond(embed=embed)
+
+
 
 
 @bot.event
