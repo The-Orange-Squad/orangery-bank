@@ -423,6 +423,19 @@ async def lvlrewards(ctx):
     await ctx.respond(embed=embed)
 
 
+@bot.slash_command(name='ban', description='Ban a user from using the bot', guilds=[linker.hostguildid])
+async def ban(ctx, user: discord.Member):
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    user_ = User()
+    user_.load(user.id)
+    user_.ban()
+    embed = discord.Embed(title="Success!", description=f"Banned {user.mention} from using the bot", color=discord.Color.green())
+    await ctx.respond(embed=embed)
+
+
 @bot.event
 async def on_message(message):
     if message.author.bot:
