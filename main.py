@@ -429,11 +429,19 @@ async def ban(ctx, user: discord.Member):
     author.load(ctx.author.id)
     if author.banned:
         embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    if not author.pos == "owner":
+        embed = discord.Embed(title="Error!", description="You need to be the owner of the bot to use this command", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
     user_ = User()
     user_.load(user.id)
     user_.ban()
-    embed = discord.Embed(title="Success!", description=f"Banned {user.mention} from using the bot", color=discord.Color.green())
+    if user_.banned:
+        embed = discord.Embed(title="Success!", description=f"Banned {user.mention} from using the bot", color=discord.Color.green())
+    else:
+        embed = discord.Embed(title="Failed!", description="An error occurred while banning the user", color=discord.Color.red())
     await ctx.respond(embed=embed)
+
 
 
 @bot.event
