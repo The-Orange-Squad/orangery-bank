@@ -13,6 +13,14 @@ class RewardRoles:
                 for key, value in self.roles.items():
                     temp[int(key)] = value
                 self.roles = temp
+                # Also convert the keys of the children to int
+                temp = {}
+                for key in self.roles:
+                    temp[key] = {}
+                    for key2 in self.roles[key]:
+                        temp[key][int(key2)] = self.roles[key][key2]
+
+                self.roles = temp
         else:
             self.roles = {}
     
