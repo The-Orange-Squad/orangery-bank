@@ -11,6 +11,7 @@ from discord.ext import commands
 from discord.commands import Option
 from discord.ui import Button, Select, View
 from messagecounter.msgc import LastMessage
+from management.rewardroles import RewardRoles
 import random
 
 
@@ -26,6 +27,9 @@ bot.remove_command("help")
 colorizer = Colorizer()
 LastMessage = LastMessage()
 LastMessage.load()
+
+rr = RewardRoles()
+rr.load()
 
 @bot.event
 async def on_ready():
@@ -354,6 +358,52 @@ async def rank(ctx, user: Option(User, "The user to check the rank of", required
     embed = discord.Embed(title=f"{user.name}'s rank", description=f"Level: {user_.get_lvl(ctx.guild.id)}\nXP: {user_.get_xp(ctx.guild.id)}\nMessage Count: {user_.get_msgc(ctx.guild.id)}", color=discord.Color.random())
     await ctx.respond(embed=embed)
 
+@bot.slash_command(name='lvlreward', description='Set a role to be given to a user when they reach a certain level')
+async def lvlreward(ctx, level: int, role: discord.Role):
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    # Check if the user has the admin/mod role
+    setup = GuildSetup()
+    setup.load(ctx.guild.id)
+    if setup.settings["modrole"] == "undefined" or setup.settings["adminrole"] == "undefined":
+        embed = discord.Embed(title="Error!", description="No moderator role or administrator role has been set for this server", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    
+    if setup.settings["modrole"] not in [role.id for role in ctx.author.roles] and setup.settings["adminrole"] not in [role.id for role in ctx.author.roles]:
+        embed = discord.Embed(title="Error!", description="You need to have the moderator role or the administrator role to use this command", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    
+    rr.add(level, role.id, ctx.guild.id)
+    embed = discord.Embed(title="Success!", description=f"Set the role {role.mention} to be given to users when they reach level {level}", color=discord.Color.green())
+    await ctx.respond(embed=embed)
+
+@bot.slash_command(name='lvlrewardremove', description='Remove a role that is given to a user when they reach a certain level')
+async def lvlrewardremove(ctx, level: int):
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    setup = GuildSetup()
+    setup.load(ctx.guild.id)
+    if setup.settings["modrole"] == "undefined" or setup.settings["adminrole"] == "undefined":
+        embed = discord.Embed(title="Error!", description="No moderator role or administrator role has been set for this server", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    
+    if setup.settings["modrole"] not in [role.id for role in ctx.author.roles] and setup.settings["adminrole"] not in [role.id for role in ctx.author.roles]:
+        embed = discord.Embed(title="Error!", description="You need to have the moderator role or the administrator role to use this command", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    
+    rr.remove(level, ctx.guild.id)
+    embed = discord.Embed(title="Success!", description=f"Removed the role that is given to users when they reach level {level}", color=discord.Color.green())
+    await ctx.respond(embed=embed)
+
+
 @bot.event
 async def on_message(message):
     if message.author.bot:
@@ -380,6 +430,10 @@ async def on_message(message):
                         emoji = str(moji)
             
             embed.add_field(name="Reward", value=f"Received {reward} {emoji if linker.needicon else ''} {linker.currname}", inline=False)
+            if rr.hasreward(user.get_lvl(message.guild.id), message.guild.id):
+                role = rr.get(user.get_lvl(message.guild.id), message.guild.id)
+                await message.author.add_roles(discord.utils.get(message.guild.roles, id=role))
+                embed.add_field(name="Reward Role", value=f"As an additional reward, you have been given the role {discord.utils.get(message.guild.roles, id=role).mention}", inline=False)
             await message.channel.send(embed=embed)
     else:
         pass
