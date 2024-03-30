@@ -525,6 +525,54 @@ async def view_balance(ctx, user: discord.User):
     embed = discord.Embed(title=f"{user.name}'s balance", description=f"Balance: {user_.get_balance(ctx.guild.id)} {constructCurrName()}", color=discord.Color.random())
     await ctx.respond(embed=embed)
 
+@bot.user_command(name="View Rank", description="View the rank of the specified user")
+async def view_rank(ctx, user: discord.User):
+    user_ = User()
+    user_.load(user.id)
+    embed = discord.Embed(title=f"{user.name}'s rank", description=f"Level: {user_.get_lvl(ctx.guild.id)}\nXP: {user_.get_xp(ctx.guild.id)} / {round(user_.getxpreq(user_.get_lvl(ctx.guild.id)))}\nMessage Count: {user_.get_msgc(ctx.guild.id)}", color=discord.Color.random())
+    await ctx.respond(embed=embed)
+
+@bot.user_command(name="View Inventory", description="View the inventory of the specified user")
+async def view_inventory(ctx, user: discord.User):
+    user_ = User()
+    user_.load(user.id)
+    embed = discord.Embed(title=f"{user.name}'s inventory", description="Here's what's in the inventory!")
+    lrv = invLRView(ctx, embed, user_.get_inventory(ctx.guild.id))
+    await lrv.pre_rendder()
+    await ctx.respond(embed=embed, view=lrv)
+
+@bot.slash_command(name="leaderboard", description="View the leaderboard of the server")
+async def leaderboard(ctx):
+    # This takes a while to load, so we defer the response
+    await ctx.defer()
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    servermembers = [member.id for member in ctx.guild.members]
+    templb = {}
+    filelist = os.listdir("data/users")
+    filelist.remove("basehandler.json")
+    for user in filelist:
+        user_ = User()
+        id = int(user.replace(".json", ""))
+        # check if the user is in the guild
+        if not id in servermembers:
+            continue
+        user_.load(id)
+        templb[user_.get_balance(ctx.guild.id)] = id
+    lb = dict(sorted(templb.items(), reverse=True))
+    embed = discord.Embed(title=f"{ctx.guild.name}'s Leaderboard", description="Here are the top 10 users in the server")
+    i = 0
+    for key, value in lb.items():
+        if i == 10:
+            break
+        user = bot.get_user(value)
+        embed.add_field(name=f"{user.name}", value=f"Balance: {key} {constructCurrName()}", inline=False)
+        i += 1
+    await ctx.respond(embed=embed)
+
+
 
 
 

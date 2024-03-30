@@ -14,12 +14,17 @@ class LastMessage:
     
     def is_passed(self, userid, time_, guildid):
         if not userid in self.lastmsgtime:
+            self.lastmsgtime[userid] = {}
+            return False
+        if guildid not in self.lastmsgtime[userid]:
             self.lastmsgtime[userid][guildid] = 0
             return False
         return time.time() - self.lastmsgtime[userid][guildid] > time_
     
     def get_lastmsgtime(self, userid, guildid):
         if not userid in self.lastmsgtime:
+            self.lastmsgtime[userid] = {}
+        if guildid not in self.lastmsgtime[userid]:
             self.lastmsgtime[userid][guildid] = 0
         return self.lastmsgtime[userid][guildid]
 
