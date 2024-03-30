@@ -31,6 +31,16 @@ LastMessage.load()
 rr = RewardRoles()
 rr.load()
 
+def constructCurrName():
+    if linker.needicon:
+        hostguild = bot.get_guild(linker.hostguildid)
+        mojis = hostguild.emojis
+        for moji in mojis:
+            if moji.id == linker.emojiid:
+                emoji = str(moji)
+        return f"{linker.currname} {emoji}"
+    return linker.currname
+
 @bot.event
 async def on_ready():
     print(colorizer.colorize("Logged in as", "green") + " " + bot.user.name)
@@ -48,13 +58,7 @@ async def balance(ctx, user: Option(User, "The user to check the balance of", re
     author.load(ctx.author.id)
     if author.banned:
         embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
-    if linker.needicon:
-        hostguild = bot.get_guild(linker.hostguildid)
-        mojis = hostguild.emojis
-        for moji in mojis:
-            if moji.id == linker.emojiid:
-                emoji = str(moji)
-    embed = discord.Embed(title=f"{user.name}'s balance", description=f"Balance: {user_.get_balance(ctx.guild.id)} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.random())
+    embed = discord.Embed(title=f"{user.name}'s balance", description=f"Balance: {user_.get_balance(ctx.guild.id)} {constructCurrName()}", color=discord.Color.random())
     await ctx.respond(embed=embed)
 
 class ShopLRView(View):
@@ -202,13 +206,7 @@ async def give_money(ctx, user: discord.Member, amount: int):
     user_ = User()
     user_.load(user.id)
     user_.edit_money(amount, ctx.guild.id)
-    if linker.needicon:
-        hostguild = bot.get_guild(linker.hostguildid)
-        mojis = hostguild.emojis
-        for moji in mojis:
-            if moji.id == linker.emojiid:
-                emoji = str(moji)
-    embed = discord.Embed(title="Success!", description=f"Gave {amount} {emoji if linker.needicon else ''} {linker.currname} to {user.mention}", color=discord.Color.green())
+    embed = discord.Embed(title="Success!", description=f"Gave {amount} {constructCurrName()} to {user.mention}", color=discord.Color.green())
     await ctx.respond(embed=embed)
 
 async def shopAutoComplete(ctx: discord.AutocompleteContext):
@@ -240,7 +238,7 @@ async def buy(ctx, item: Option(str, "The item to buy", required=True, autocompl
         for moji in mojis:
             if moji.id == linker.emojiid:
                 emoji = str(moji)
-    embed = discord.Embed(title="Success!", description=f"Bought {amount} {shop.pair(item)} for {itemlist[item]['price'] * amount} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.green())
+    embed = discord.Embed(title="Success!", description=f"Bought {amount} {shop.pair(item)} for {itemlist[item]['price'] * amount} {constructCurrName()}", color=discord.Color.green())
     await ctx.respond(embed=embed)
 
 class invLRView(View):
@@ -329,14 +327,7 @@ async def sell(ctx, item: Option(str, "The item to sell", required=True, autocom
     user.edit_money(price, ctx.guild.id)
     user.remove_item(item, amount, ctx.guild.id)
 
-    if linker.needicon:
-        hostguild = bot.get_guild(linker.hostguildid)
-        mojis = hostguild.emojis
-        for moji in mojis:
-            if moji.id == linker.emojiid:
-                emoji = str(moji)
-
-    embed = discord.Embed(title="Success!", description=f"Sold {amount} {shop.pair(item)} for {price} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.green())
+    embed = discord.Embed(title="Success!", description=f"Sold {amount} {shop.pair(item)} for {price} {constructCurrName()}", color=discord.Color.green())
     pricediff = price - normalprice
     abspricediff = abs(pricediff)
     # the price difference determines whether the user gets more or less money than the average price
@@ -487,20 +478,14 @@ async def coinflip(ctx, bet: int, side: Option(str, "The side to bet on", requir
         embed = discord.Embed(title="Error!", description="You can't bet less than 1", color=discord.Color.red())
         await ctx.respond(embed=embed)
         return
-    
-    if linker.needicon:
-        hostguild = bot.get_guild(linker.hostguildid)
-        mojis = hostguild.emojis
-        for moji in mojis:
-            if moji.id == linker.emojiid:
-                emoji = str(moji)
+
     user.edit_money(-bet, ctx.guild.id)
     result = random.choice(["Heads", "Tails"])
     if result == side:
         user.edit_money(bet * 2, ctx.guild.id)
-        embed = discord.Embed(title="Success!", description=f"The coin landed on {result}! You won {bet} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.green())
+        embed = discord.Embed(title="Success!", description=f"The coin landed on {result}! You won {bet} {constructCurrName()}", color=discord.Color.green())
     else:
-        embed = discord.Embed(title="Failure!", description=f"The coin landed on {result}! You lost {bet} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.red())
+        embed = discord.Embed(title="Failure!", description=f"The coin landed on {result}! You lost {bet} {constructCurrName()}", color=discord.Color.red())
     await ctx.respond(embed=embed)
 
 @bot.slash_command(name='dice', description='Roll a dice')
@@ -525,18 +510,12 @@ async def dice(ctx, bet: int, number: Option(int, "The number to bet on", requir
         await ctx.respond(embed=embed)
         return
     result = random.randint(1, 6)
-    if linker.needicon:
-        hostguild = bot.get_guild(linker.hostguildid)
-        mojis = hostguild.emojis
-        for moji in mojis:
-            if moji.id == linker.emojiid:
-                emoji = str(moji)
     user.edit_money(-bet, ctx.guild.id)
     if result == number:
         user.edit_money(bet * 2, ctx.guild.id)
-        embed = discord.Embed(title="Success!", description=f"The dice landed on {result}! You won {bet * 2} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.green())
+        embed = discord.Embed(title="Success!", description=f"The dice landed on {result}! You won {bet * 2} {constructCurrName()}", color=discord.Color.green())
     else:
-        embed = discord.Embed(title="Failure!", description=f"The dice landed on {result}! You lost {bet} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.red())
+        embed = discord.Embed(title="Failure!", description=f"The dice landed on {result}! You lost {bet} {constructCurrName()}", color=discord.Color.red())
     await ctx.respond(embed=embed)
 
 
@@ -570,14 +549,8 @@ async def on_message(message):
             reward = round(user.get_lvl(message.guild.id) * random.randint(linker.rewardrange[0], linker.rewardrange[1]) * (user.get_mod(message.guild.id) / 2))
             reward *= user.getmodifiers(message.guild.id)
             user.edit_money(reward, message.guild.id)
-            if linker.needicon:
-                hostguild = bot.get_guild(linker.hostguildid)
-                mojis = hostguild.emojis
-                for moji in mojis:
-                    if moji.id == linker.emojiid:
-                        emoji = str(moji)
             
-            embed.add_field(name="Reward", value=f"Received {reward} {emoji if linker.needicon else ''} {linker.currname}", inline=False)
+            embed.add_field(name="Reward", value=f"Received {reward} {constructCurrName()}", inline=False)
             if rr.hasreward(user.get_lvl(message.guild.id), message.guild.id):
                 role = rr.get(user.get_lvl(message.guild.id), message.guild.id)
                 try:
