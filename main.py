@@ -477,13 +477,20 @@ async def coinflip(ctx, bet: int, side: Option(str, "The side to bet on", requir
         embed = discord.Embed(title="Error!", description="You can't bet less than 1", color=discord.Color.red())
         await ctx.respond(embed=embed)
         return
+    
+    if linker.needicon:
+        hostguild = bot.get_guild(linker.hostguildid)
+        mojis = hostguild.emojis
+        for moji in mojis:
+            if moji.id == linker.emojiid:
+                emoji = str(moji)
     user.edit_money(-bet, ctx.guild.id)
     result = random.choice(["Heads", "Tails"])
     if result == side:
         user.edit_money(bet * 2, ctx.guild.id)
-        embed = discord.Embed(title="Success!", description=f"The coin landed on {result}! You won {bet} {linker.currname}", color=discord.Color.green())
+        embed = discord.Embed(title="Success!", description=f"The coin landed on {result}! You won {bet} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.green())
     else:
-        embed = discord.Embed(title="Failure!", description=f"The coin landed on {result}! You lost {bet} {linker.currname}", color=discord.Color.red())
+        embed = discord.Embed(title="Failure!", description=f"The coin landed on {result}! You lost {bet} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.red())
     await ctx.respond(embed=embed)
 
 @bot.slash_command(name='dice', description='Roll a dice')
@@ -507,12 +514,18 @@ async def dice(ctx, bet: int, number: Option(int, "The number to bet on", requir
         await ctx.respond(embed=embed)
         return
     result = random.randint(1, 6)
+    if linker.needicon:
+        hostguild = bot.get_guild(linker.hostguildid)
+        mojis = hostguild.emojis
+        for moji in mojis:
+            if moji.id == linker.emojiid:
+                emoji = str(moji)
     user.edit_money(-bet, ctx.guild.id)
     if result == number:
         user.edit_money(bet * 2, ctx.guild.id)
-        embed = discord.Embed(title="Success!", description=f"The dice landed on {result}! You won {bet * 2} {linker.currname}", color=discord.Color.green())
+        embed = discord.Embed(title="Success!", description=f"The dice landed on {result}! You won {bet * 2} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.green())
     else:
-        embed = discord.Embed(title="Failure!", description=f"The dice landed on {result}! You lost {bet} {linker.currname}", color=discord.Color.red())
+        embed = discord.Embed(title="Failure!", description=f"The dice landed on {result}! You lost {bet} {emoji if linker.needicon else ''} {linker.currname}", color=discord.Color.red())
     await ctx.respond(embed=embed)
 
 
