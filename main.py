@@ -403,6 +403,25 @@ async def lvlrewardremove(ctx, level: int):
     embed = discord.Embed(title="Success!", description=f"Removed the role that is given to users when they reach level {level}", color=discord.Color.green())
     await ctx.respond(embed=embed)
 
+@bot.slash_command(name='lvlrewards', description='View all the level rewards set for the server')
+async def lvlrewards(ctx):
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot\n\n", color=discord.Color.red())
+    
+    rrlist = rr.roles[ctx.guild.id]
+    embed = discord.Embed(title="Level Rewards", description="Here are all the level rewards set for this server")
+    for key, value in rrlist.items():
+        embed.description += f"\n**Level {key}**:"
+        try:
+            embed.description += f" {discord.utils.get(ctx.guild.roles, id=value).mention}"
+        except:
+            embed.description += f" Could not retrieve role (ID: {value})"
+    
+    embed.set_footer(text=f"For reaching a new level, you also receive from {linker.rewardrange[0]} to {linker.rewardrange[1]} {linker.currname}, multiplied by your level and then divided by 2")
+    await ctx.respond(embed=embed)
+
 
 @bot.event
 async def on_message(message):
