@@ -83,6 +83,10 @@ class User:
         self.banned = True
         self.save()
 
+    def unban(self):
+        self.banned = False
+        self.save()
+
     def give_xp(self, amount, guildid):
         if not guildid in self.xp:
             self.xp[guildid] = 0
