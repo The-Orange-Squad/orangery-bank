@@ -1,28 +1,50 @@
-BSD 3-Clause License
+The Orange Squad Production License
 
-Copyright (c) 2024, The Orange Squad
+Copyright (c) 2023-2024, LyubomirT, The Orange Squad. All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+Redistribution and use in source and/or binary forms, with or without any 
+modifications, are permitted as long as the following conditions are met:
 
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
+1. You must not claim that you wrote the original software. If you use this 
+   software in a product, an acknowledgment in the product documentation would 
+   be appreciated but is not required.
 
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
+2. The copyright notice above and this permission notice must be included in 
+   all copies or substantial portions of the software.
 
-3. Neither the name of the copyright holder nor the names of its
-   contributors may be used to endorse or promote products derived from
-   this software without specific prior written permission.
+3. The copyright holder and contributors are not responsible for any damages 
+   caused by use of this software.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+4. Neither the name of the copyright holder nor the names of its contributors 
+   may be used to endorse or promote products derived from this software without 
+   specific prior written permission.
+
+5. Redistributions of any form whatsoever must retain the following acknowledgment:
+   "This product includes software developed by The Orange Squad."
+
+6. Software may not be used for any commercial purposes without explicit written 
+   permission from the copyright holder. This includes, but is not limited to,
+   selling the software, selling modified versions of the software, and selling
+   software services that use the software.
+
+7. This software may not be used in any form of illegal activity. You are responsible
+   for ensuring that you are in compliance with all laws in your jurisdiction.
+   The Orange Squad is not responsible for any illegal activities performed with
+   this software, and you may not hold The Orange Squad responsible for any
+   criminal charges or other legal consequences resulting from the use of this software.
+
+DISCLAIMER: This software is provided by the copyright holders and contributors
+"as is" and any express or implied warranties, including, but not limited to,
+the implied warranties of merchantability and fitness for a particular purpose
+are disclaimed. In no event shall the copyright holder or contributors be liable
+for any direct, indirect, incidental, special, exemplary, or consequential
+damages (including, but not limited to, procurement of substitute goods or
+services; loss of use, data, or profits; or business interruption) however
+caused and on any theory of liability, whether in contract, strict liability,
+or tort (including negligence or otherwise) arising in any way out of the use
+of this software, even if advised of the possibility of such damage.
+
+
+This license is a modified version of the BSD 3-Clause License. The original
+license can be found at https://opensource.org/licenses/BSD-3-Clause.
+
