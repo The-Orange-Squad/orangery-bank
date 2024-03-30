@@ -198,3 +198,8 @@ class User:
         if level == 0:
             return basexpreq
         return basexpreq * (basexpreqmod ** level)
+    
+    def getmodifiers(self, guildid):
+        if not guildid in self.modifiers:
+            self.modifiers[guildid] = 1
+        return self.modifiers[guildid]

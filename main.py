@@ -544,6 +544,7 @@ async def on_message(message):
             embed = discord.Embed(title="Level Up!", description=f"{message.author.mention} has leveled up to level {user.get_lvl(message.guild.id)}!", color=discord.Color.green())
             # Formula: Level * random(reward range min to reward range max) * (user modifier / 2) = reward
             reward = round(user.get_lvl(message.guild.id) * random.randint(linker.rewardrange[0], linker.rewardrange[1]) * (user.get_mod(message.guild.id) / 2))
+            reward *= user.getmodifiers(message.guild.id)
             user.edit_money(reward, message.guild.id)
             if linker.needicon:
                 hostguild = bot.get_guild(linker.hostguildid)
