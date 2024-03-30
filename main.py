@@ -518,6 +518,13 @@ async def dice(ctx, bet: int, number: Option(int, "The number to bet on", requir
         embed = discord.Embed(title="Failure!", description=f"The dice landed on {result}! You lost {bet} {constructCurrName()}", color=discord.Color.red())
     await ctx.respond(embed=embed)
 
+@bot.user_command(name="View Balance", description="View the balance of the specified user")
+async def view_balance(ctx, user: discord.User):
+    user_ = User()
+    user_.load(user.id)
+    embed = discord.Embed(title=f"{user.name}'s balance", description=f"Balance: {user_.get_balance(ctx.guild.id)} {constructCurrName()}", color=discord.Color.random())
+    await ctx.respond(embed=embed)
+
 
 
 
