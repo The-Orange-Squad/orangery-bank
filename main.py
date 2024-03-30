@@ -177,6 +177,7 @@ async def adminrole_error(ctx, error):
     
 @setupgroup.command(name="give_money", description="Give money to a user")
 async def give_money(ctx, user: discord.Member, amount: int):
+    await ctx.defer()
     author = User()
     author.load(ctx.author.id)
     if author.banned:
@@ -215,6 +216,7 @@ async def shopAutoComplete(ctx: discord.AutocompleteContext):
 
 @bot.slash_command(name="buy", description="Buy an item from the shop")
 async def buy(ctx, item: Option(str, "The item to buy", required=True, autocomplete=discord.utils.basic_autocomplete(shopAutoComplete)), amount: Option(int, "The amount of the item to buy", required=False, default=1)):
+    await ctx.defer()
     author = User()
     author.load(ctx.author.id)
     if author.banned:
@@ -297,6 +299,7 @@ async def inventory(ctx, user: Option(User, "The user to check the inventory of"
 
 @bot.slash_command(name="sell", description="Sell an item from the inventory")
 async def sell(ctx, item: Option(str, "The item to sell", required=True, autocomplete=discord.utils.basic_autocomplete(shopAutoComplete)), amount: Option(int, "The amount of the item to sell", required=False, default=1)):
+    await ctx.defer()
     author = User()
     author.load(ctx.author.id)
     if author.banned:
@@ -349,6 +352,7 @@ async def sell(ctx, item: Option(str, "The item to sell", required=True, autocom
 
 @bot.slash_command(name="rank", description="Check the rank of the specified user")
 async def rank(ctx, user: Option(User, "The user to check the rank of", required=True)):
+    await ctx.defer()
     author = User()
     author.load(ctx.author.id)
     if author.banned:
@@ -360,6 +364,7 @@ async def rank(ctx, user: Option(User, "The user to check the rank of", required
 
 @bot.slash_command(name='lvlreward', description='Set a role to be given to a user when they reach a certain level')
 async def lvlreward(ctx, level: int, role: discord.Role):
+    await ctx.defer()
     author = User()
     author.load(ctx.author.id)
     if author.banned:
@@ -383,6 +388,7 @@ async def lvlreward(ctx, level: int, role: discord.Role):
 
 @bot.slash_command(name='lvlrewardremove', description='Remove a role that is given to a user when they reach a certain level')
 async def lvlrewardremove(ctx, level: int):
+    await ctx.defer()
     author = User()
     author.load(ctx.author.id)
     if author.banned:
@@ -405,6 +411,7 @@ async def lvlrewardremove(ctx, level: int):
 
 @bot.slash_command(name='lvlrewards', description='View all the level rewards set for the server')
 async def lvlrewards(ctx):
+    await ctx.defer()
     author = User()
     author.load(ctx.author.id)
     if author.banned:
@@ -425,6 +432,7 @@ async def lvlrewards(ctx):
 
 @bot.slash_command(name='ban', description='Ban a user from using the bot', guilds=[linker.hostguildid])
 async def ban(ctx, user: discord.Member):
+    await ctx.defer()
     author = User()
     author.load(ctx.author.id)
     if author.banned:
@@ -444,6 +452,7 @@ async def ban(ctx, user: discord.Member):
 
 @bot.slash_command(name='unban', description='Unban a user from using the bot', guilds=[linker.hostguildid])
 async def unban(ctx, user: discord.Member):
+    await ctx.defer()
     author = User()
     author.load(ctx.author.id)
     if author.banned:
@@ -463,6 +472,7 @@ async def unban(ctx, user: discord.Member):
 
 @bot.slash_command(name='coinflip', description='Flip a coin')
 async def coinflip(ctx, bet: int, side: Option(str, "The side to bet on", required=True, choices=["Heads", "Tails"])):
+    await ctx.defer()
     author = User()
     author.load(ctx.author.id)
     if author.banned:
@@ -495,6 +505,7 @@ async def coinflip(ctx, bet: int, side: Option(str, "The side to bet on", requir
 
 @bot.slash_command(name='dice', description='Roll a dice')
 async def dice(ctx, bet: int, number: Option(int, "The number to bet on", required=True)):
+    await ctx.defer()
     author = User()
     author.load(ctx.author.id)
     if author.banned:
