@@ -22,4 +22,5 @@ Orangery Bank is an open-source version of Orange Bank used in The Orange Squad,
 
 - An ultimate linker file
 - Microconfiguration lines within certain modules
+- Straightforward configuration
 
