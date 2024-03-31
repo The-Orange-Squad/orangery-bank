@@ -401,7 +401,7 @@ async def rank(ctx, user: Option(User, "The user to check the rank of", required
         else:
             adata = f"\nNext Reward: Level {maxreward}\n\nProgress:\n {generatePB(lvl, maxreward)}"
         # level data + what's your progress to the next reward (if you're not already at the highest reward)
-        embed.add_field(name="Level", value=f"{lvl}\n\n{adata}", inline=False)
+        embed.add_field(name="Level", value=f"{lvl} / {adata}", inline=False)
         # xp data + how many xp you need for the next level
         xp = user_.get_xp(ctx.guild.id)
         embed.add_field(name="XP", value=f"{xp} / {round(user_.getxpreq(lvl))}\n\nProgress:\n{generatePB(user_.get_xp(ctx.guild.id), round(user_.getxpreq(lvl)))}", inline=False)
