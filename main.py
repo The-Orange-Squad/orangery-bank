@@ -765,6 +765,26 @@ def eat(ctx):
     embed = discord.Embed(title="Eaten!", description=random.choice(eatcommentlist), color=discord.Color.green())
     return embed
 
+def open_mbox(ctx):
+    outcomes = 10
+
+    user = User()
+    user.load(ctx.author.id)
+
+    outcome = random.randint(1, outcomes)
+    # outcome 1: get a basic reward (m_basicreward)
+    # outcome 2: get some items from the m_bitempool
+    # outcome 3: get the same item (m_mboxid)
+    # outcome 4: get a little bit of XP
+    # outcome 5: get m_basicreward * 2
+    # NEGATIVE
+    # outcome 6: lose 1 of a random item you have
+    # outcome 7: lose m_basicreward * 1.4
+    # outcome 8: lose a little bit of XP
+    # outcome 9: lose a random item you have (completely)
+    # outcome 10: lose m_basicreward * 2
+
+
 @bot.slash_command(name='use', description='Use an item from your inventory')
 async def use(ctx, item: Option(str, "The item to use", required=True, autocomplete=discord.utils.basic_autocomplete(shopAutoComplete))):
     await ctx.defer()

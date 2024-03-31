@@ -20,3 +20,7 @@ c_deflosspenalty = 0.2 # of the total balance
 c_deflosspenalty_max = 25000
 
 dailyreward = [100, 200]
+
+m_basicreward = [75, 200]
+m_bitempool = [0, 6]
+m_mboxid = 9
