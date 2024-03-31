@@ -603,6 +603,11 @@ async def work(ctx):
 
     await ctx.respond(embed=embed)
 
+@work.error
+async def work_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        embed = discord.Embed(title="Error!", description=f"You need to wait {error.retry_after} seconds before working again", color=discord.Color.red())
+        await ctx.respond(embed=embed)
 
 
 
