@@ -567,8 +567,8 @@ async def dice(ctx, bet: int, number: Option(int, "The number to bet on", requir
         embed = discord.Embed(title="Error!", description="You don't have enough money to bet this amount", color=discord.Color.red())
         await ctx.respond(embed=embed)
         return
-    if bet < 1:
-        embed = discord.Embed(title="Error!", description="You can't bet less than 1", color=discord.Color.red())
+    if bet < 6:
+        embed = discord.Embed(title="Error!", description="You can't bet less than 6", color=discord.Color.red())
         await ctx.respond(embed=embed)
         return
     if number not in range(1, 7):
