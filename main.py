@@ -604,7 +604,7 @@ async def work(ctx):
     if random.random() < linker.w_xpchance:
         xp = random.randint(linker.w_xprewardrange[0], linker.w_xprewardrange[1])
         user.give_xp(xp, ctx.guild.id)
-        embed.add_field(name="XP Reward (Bonus!)", value=f"Received {xp} XP", inline=False)
+        embed.add_field(name="XP Reward (Bonus)", value=f"Received {xp} XP", inline=False)
 
     await ctx.respond(embed=embed)
 

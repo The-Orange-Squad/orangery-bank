@@ -11,5 +11,5 @@ eb_max = 5
 eb_req = 400
 
 w_rewardrange = [50, 200]
-w_xprewardrange = [50, 100]
+w_xprewardrange = [100, 200]
 w_xpchance = 0.009 # 0.9%
