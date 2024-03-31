@@ -32,6 +32,11 @@ class Shop:
             "🍑 Peach": {
                 "price": 22,
                 "desc": "A soft peach. Fuzzy thing!"
+            },
+            "🎁 Gift Box": {
+                "price": 400,
+                "desc": "A gift box that contains a random item (literally).",
+                "funcstr": "open_giftbox(ctx)"
             }
         }
         self.processed = {}
