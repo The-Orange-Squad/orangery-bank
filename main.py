@@ -613,6 +613,36 @@ async def work_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         embed = discord.Embed(title="Error!", description=f"You need to wait {error.retry_after} seconds before working again", color=discord.Color.red())
         await ctx.respond(embed=embed)
+    
+
+@bot.slash_command(name="crime", description="Commit a crime to earn money (or fail and lose money)")
+@commands.cooldown(1, 86400, commands.BucketType.user)  # 24 hours cooldown
+async def crime(ctx, risk: Option(int, "The risk level of the crime.", required=True, choices=[1, 2, 3])):
+    await ctx.defer()
+    user = User()
+    user.load(ctx.author.id)
+
+    if user.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+
+    w_or_l = random.randint(1, 100)
+    if linker.c_defwinchance / risk > w_or_l:
+        reward = random.randint(linker.c_defwinreward[0], linker.c_defwinreward[1]) * risk
+        reward *= user.getmodifiers(ctx.guild.id)
+        user.edit_money(reward, ctx.guild.id)
+        embed = discord.Embed(title="Success!", description=f"You committed a crime and earned {reward} {constructCurrName()}", color=discord.Color.green())
+        embed.set_footer(text=f"This crime was a level {risk} crime, means that your chance of success was {(linker.c_defwinchance / risk) * 100}%")
+    else:
+        # c_deflosspenalty is used to calculate the amount of money you lose from your total balance
+        loss = round(user.get_balance(ctx.guild.id) * linker.c_deflosspenalty)
+        user.edit_money(-loss, ctx.guild.id)
+        embed = discord.Embed(title="Failure!", description=f"You committed a crime and lost {loss} {constructCurrName()}", color=discord.Color.red())
+        embed.set_footer(text=f"This crime was a level {risk} crime, means that your chance of success was {(linker.c_defwinchance / risk) * 100}%")
+    
+    await ctx.respond(embed=embed)
+
 
 
 
