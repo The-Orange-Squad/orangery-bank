@@ -902,7 +902,11 @@ async def on_message(message):
     user.load(message.author.id)
     user.give_msgc(message.guild.id)
     user.save()
-    if LastMessage.is_passed(message.author.id, linker.msgtimeout, message.guild.id):
+    setup = GuildSetup()
+    setup.load(message.guild.id)
+    if setup.is_ic(message.channel.id):
+        return
+    if LastMessage.is_passed(message.author.id, linker.msgtimeout, message.guild.id) and not user.banned:
         xprandom = random.randint(linker.xprange[0], linker.xprange[1])
         if linker.effortboost:
             # Based on the amount of characters in the message, determine the multiplier. Required characters: eb_req, max multiplier: eb_max
