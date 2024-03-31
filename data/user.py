@@ -203,3 +203,7 @@ class User:
         if not guildid in self.modifiers:
             self.modifiers[guildid] = 1
         return self.modifiers[guildid]
+    
+    def refresh(self):
+        self.load(self.id)
+        return True

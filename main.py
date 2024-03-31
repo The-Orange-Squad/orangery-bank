@@ -742,6 +742,7 @@ def open_giftbox(ctx):
     print(colorizer.colorize("Opening gift box...", "yellow"))
     user = User()
     user.load(ctx.author.id)
+    print(colorizer.colorize(f"User {ctx.author.id} loaded", "green"))
     if user.banned:
         embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
         return embed
@@ -770,7 +771,6 @@ async def use(ctx, item: Option(str, "The item to use", required=True, autocompl
     itemlist = shop.get_processed()
     item_data = itemlist.get(item)
     if item_data and item_data.get("funcstr"):
-        # Pass context variables and user-defined parameters to the exec
         exec_globals = globals().copy()
         exec_globals.update({"ctx": ctx, "user": user, "item_data": item_data})
         try:
@@ -779,10 +779,9 @@ async def use(ctx, item: Option(str, "The item to use", required=True, autocompl
             embed = discord.Embed(title="Error!", description=str(e), color=discord.Color.red())
             await ctx.respond(embed=embed)
             return
-        # You may want to handle the return value from the executed function here
-        # For simplicity, I'll assume the function updates user inventory and returns an embed
-        await ctx.respond(embed=returned)
+        user.refresh()
         user.remove_item(item, 1, ctx.guild.id)
+        await ctx.respond(embed=returned)
     else:
         embed = discord.Embed(title="Error!", description="This item cannot be used", color=discord.Color.red())
         await ctx.respond(embed=embed)
