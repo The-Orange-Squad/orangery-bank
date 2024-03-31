@@ -887,7 +887,25 @@ async def setup_givexp(ctx, user: discord.Member, xp: int):
     
     user_ = User()
     user_.load(user.id)
-    user_.give_xp(xp, ctx.guild.id)
+    returned = user_.give_xp(xp, ctx.guild.id)
+
+    # give roles if the user has reached a new level
+    if returned == "newlvl":
+        embed = discord.Embed(title="Level Up!", description=f"{user.mention} has leveled up to level {user_.get_lvl(ctx.guild.id)}!", color=discord.Color.green())
+        reward = round(user_.get_lvl(ctx.guild.id) * random.randint(linker.rewardrange[0], linker.rewardrange[1]) * (user_.get_mod(ctx.guild.id) / 2))
+        reward *= user_.getmodifiers(ctx.guild.id)
+        user_.edit_money(reward, ctx.guild.id)
+        embed.add_field(name="Reward", value=f"Received {reward} {constructCurrName()}", inline=False)
+        if rr.hasreward(user_.get_lvl(ctx.guild.id), ctx.guild.id):
+            try:
+                role = rr.get(user_.get_lvl(ctx.guild.id), ctx.guild.id)
+                role = discord.utils.get(ctx.guild.roles, id=role)
+                await user.add_roles(role)
+                embed.add_field(name="Role Reward", value=f"Received the role {role.mention}", inline=False)
+            except Exception as e:
+                embed.add_field(name="Role Reward", value="Could not give the role", inline=False)
+                embed.add_field(name="Error", value=str(e), inline=False)
+        await ctx.respond(embed=embed)
 
     embed = discord.Embed(title="Success!", description=f"Gave {xp} XP to {user.mention}", color=discord.Color.green())
     await ctx.respond(embed=embed)
