@@ -869,6 +869,8 @@ async def on_message(message):
 
 @bot.event
 async def on_member_join(member):
+    if member.bot:
+        return
     user = User()
     user.load(member.id)
     user.save()
