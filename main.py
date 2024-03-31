@@ -643,6 +643,12 @@ async def crime(ctx, risk: Option(int, "The risk level of the crime.", required=
     
     await ctx.respond(embed=embed)
 
+@crime.error
+async def crime_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        embed = discord.Embed(title="Error!", description=f"You need to wait {error.retry_after} seconds before committing a crime again", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+
 
 
 
