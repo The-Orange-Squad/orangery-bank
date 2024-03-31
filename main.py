@@ -764,6 +764,7 @@ def eat(ctx):
     eatcommentlist = ["That was tasty, wasn't it?", "Yum!", "Delicious!", "Satisfying 😌", "Well, that was a good meal!"]
     embed = discord.Embed(title="Eaten!", description=random.choice(eatcommentlist), color=discord.Color.green())
     return embed
+
 @bot.slash_command(name='use', description='Use an item from your inventory')
 async def use(ctx, item: Option(str, "The item to use", required=True, autocomplete=discord.utils.basic_autocomplete(shopAutoComplete))):
     await ctx.defer()
