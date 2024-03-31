@@ -6,7 +6,8 @@ class GuildSetup:
     def __init__(self):
         self.settings = {
             "modrole": "undefined",
-            "adminrole": "undefined"
+            "adminrole": "undefined",
+            "ignorechannel": [],
         }
     
     def save(self, guildid):

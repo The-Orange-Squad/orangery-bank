@@ -892,6 +892,61 @@ async def setup_givexp(ctx, user: discord.Member, xp: int):
     embed = discord.Embed(title="Success!", description=f"Gave {xp} XP to {user.mention}", color=discord.Color.green())
     await ctx.respond(embed=embed)
 
+@bot.slash_command(name='setup_ignorechannel', description='Ignore a channel for any XP gain')
+async def setup_ignorechannel(ctx):
+    await ctx.defer()
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    setup = GuildSetup()
+    setup.load(ctx.guild.id)
+    if setup.settings["modrole"] == "undefined" or setup.settings["adminrole"] == "undefined":
+        embed = discord.Embed(title="Error!", description="No moderator role or administrator role has been set for this server", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    
+    if setup.settings["modrole"] not in [role.id for role in ctx.author.roles] and setup.settings["adminrole"] not in [role.id for role in ctx.author.roles]:
+        embed = discord.Embed(title="Error!", description="You need to have the moderator role or the administrator role to use this command", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+
+    if setup.is_ic(ctx.channel.id):
+        embed = discord.Embed(title="Error!", description="This channel is already ignored for XP gain", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    
+    setup.set_ic(ctx.guild.id, ctx.channel.id)
+    embed = discord.Embed(title="Success!", description=f"Ignored channel {ctx.channel.mention} for XP gain", color=discord.Color.green())
+    await ctx.respond(embed=embed)
+
+@bot.slash_command(name='setup_unignorechannel', description='Unignore a channel for any XP gain')
+async def setup_unignorechannel(ctx):
+    await ctx.defer()
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    setup = GuildSetup()
+    setup.load(ctx.guild.id)
+    if setup.settings["modrole"] == "undefined" or setup.settings["adminrole"] == "undefined":
+        embed = discord.Embed(title="Error!", description="No moderator role or administrator role has been set for this server", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    
+    if setup.settings["modrole"] not in [role.id for role in ctx.author.roles] and setup.settings["adminrole"] not in [role.id for role in ctx.author.roles]:
+        embed = discord.Embed(title="Error!", description="You need to have the moderator role or the administrator role to use this command", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+
+    if not setup.is_ic(ctx.channel.id):
+        embed = discord.Embed(title="Error!", description="This channel is not ignored for XP gain", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    
+    setup.rem_ic(ctx.guild.id, ctx.channel.id)
+    embed = discord.Embed(title="Success!", description=f"Unignored channel {ctx.channel.mention} for XP gain", color=discord.Color.green())
+    await ctx.respond(embed=embed)
 
 
 @bot.event
