@@ -668,6 +668,12 @@ async def daily(ctx):
     await ctx.respond(embed=embed)
 
 
+@daily.error
+async def daily_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        # in hours
+        embed = discord.Embed(title="Error!", description=f"You can only claim your daily reward daily (self-explanatory). Please wait {round(error.retry_after / 3600)} hours before claiming it again", color=discord.Color.red())
+        await ctx.respond(embed=embed)
 
 
 
