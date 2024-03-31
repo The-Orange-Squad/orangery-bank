@@ -48,7 +48,7 @@ class Shop:
             "📦 Mystery Box": {
                 "price": 500,
                 "desc": "A mystery box... The title says it all. What's inside?",
-                "funcstr": "open_mysterybox(ctx)"
+                "funcstr": "open_mbox(ctx)"
             }
         }
         self.processed = {}

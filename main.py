@@ -784,6 +784,56 @@ def open_mbox(ctx):
     # outcome 9: lose a random item you have (completely)
     # outcome 10: lose m_basicreward * 2
 
+    if outcome == 1:
+        reward = random.randint(linker.m_basicreward[0], linker.m_basicreward[1])
+        reward *= user.getmodifiers(ctx.guild.id)
+        user.edit_money(reward, ctx.guild.id)
+        embed = discord.Embed(title="There was some money!", description=f"Opened the mystery box and received {reward} {constructCurrName()}", color=discord.Color.green())
+    elif outcome == 2:
+        # the m_bitempool is a range of two ids, between which the item id will be chosen
+        item = random.randint(linker.m_bitempool[0], linker.m_bitempool[1])
+        amount = random.randint(1, 5)
+        # find the item name
+        itemname = shop.get_processed().get(item)["name"]
+        user.add_item(itemname, amount, ctx.guild.id)
+        embed = discord.Embed(title="There were some items!", description=f"Opened the mystery box and received {amount} {shop.pair(itemname)}", color=discord.Color.green())
+    elif outcome == 3:
+        item = linker.m_mboxid
+        item = shop.get_processed().get(item)["name"]
+        user.add_item(item, 1, ctx.guild.id)
+        embed = discord.Embed(title="There was... another mystery box?", description=f"Surprisingly, you found another mystery box inside the mystery box! Seems like another chance?", color=discord.Color.green())
+    elif outcome == 4:
+        xp = random.randint(30, 50)
+        user.give_xp(xp, ctx.guild.id)
+        embed = discord.Embed(title="There was some XP!", description=f"Opened the mystery box and received {xp} XP", color=discord.Color.green())
+    elif outcome == 5:
+        reward = random.randint(linker.m_basicreward[0], linker.m_basicreward[1]) * 2
+        reward *= user.getmodifiers(ctx.guild.id)
+        user.edit_money(reward, ctx.guild.id)
+        embed = discord.Embed(title="There was a lot of money!", description=f"Opened the mystery box and received {reward} {constructCurrName()}", color=discord.Color.green())
+    elif outcome == 6:
+        item = random.choice(list(user.inventory[ctx.guild.id].keys()))
+        user.remove_item(item, 1, ctx.guild.id)
+        embed = discord.Embed(title="There was a thief!", description=f"Opened the mystery box and lost 1 {shop.pair(item)}", color=discord.Color.red())
+    elif outcome == 7:
+        loss = round(linker.m_basicreward[0] * 1.4)
+        user.edit_money(-loss, ctx.guild.id)
+        embed = discord.Embed(title="There was a thief!", description=f"Opened the mystery box and lost {loss} {constructCurrName()}", color=discord.Color.red())
+    elif outcome == 8:
+        xp = random.randint(10, 20)
+        user.give_xp(-xp, ctx.guild.id)
+        embed = discord.Embed(title="There was a thief!", description=f"Opened the mystery box and lost {xp} XP", color=discord.Color.red())
+    elif outcome == 9:
+        item = random.choice(list(user.inventory[ctx.guild.id].keys()))
+        user.remove_item(item, user.inventory[ctx.guild.id][item], ctx.guild.id)
+        embed = discord.Embed(title="There was a thief!", description=f"Opened the mystery box and lost all {shop.pair(item)}", color=discord.Color.red())
+    elif outcome == 10:
+        loss = round(linker.m_basicreward[0] * 2)
+        user.edit_money(-loss, ctx.guild.id)
+        embed = discord.Embed(title="There was a thief!", description=f"Opened the mystery box and lost {loss} {constructCurrName()}", color=discord.Color.red())
+    return embed
+
+
 
 @bot.slash_command(name='use', description='Use an item from your inventory')
 async def use(ctx, item: Option(str, "The item to use", required=True, autocomplete=discord.utils.basic_autocomplete(shopAutoComplete))):
