@@ -755,6 +755,15 @@ def open_giftbox(ctx):
     embed = discord.Embed(title="Success!", description=f"Opened the gift box and received {amount} {shop.pair(item)}", color=discord.Color.green())
     return embed
 
+def eat(ctx):
+    user = User()
+    user.load(ctx.author.id)
+    if user.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+        return embed
+    eatcommentlist = ["That was tasty, wasn't it?", "Yum!", "Delicious!", "Satisfying 😌", "Well, that was a good meal!"]
+    embed = discord.Embed(title="Eaten!", description=random.choice(eatcommentlist), color=discord.Color.green())
+    return embed
 @bot.slash_command(name='use', description='Use an item from your inventory')
 async def use(ctx, item: Option(str, "The item to use", required=True, autocomplete=discord.utils.basic_autocomplete(shopAutoComplete))):
     await ctx.defer()
