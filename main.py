@@ -865,6 +865,32 @@ async def use(ctx, item: Option(str, "The item to use", required=True, autocompl
     else:
         embed = discord.Embed(title="Error!", description="This item cannot be used", color=discord.Color.red())
         await ctx.respond(embed=embed)
+    
+@bot.slash_command(name='setup_givexp', description='Give XP to a user')
+async def setup_givexp(ctx, user: discord.Member, xp: int):
+    await ctx.defer()
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    setup = GuildSetup()
+    setup.load(ctx.guild.id)
+    if setup.settings["modrole"] == "undefined" or setup.settings["adminrole"] == "undefined":
+        embed = discord.Embed(title="Error!", description="No moderator role or administrator role has been set for this server", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    
+    if setup.settings["modrole"] not in [role.id for role in ctx.author.roles] and setup.settings["adminrole"] not in [role.id for role in ctx.author.roles]:
+        embed = discord.Embed(title="Error!", description="You need to have the moderator role or the administrator role to use this command", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    
+    user_ = User()
+    user_.load(user.id)
+    user_.give_xp(xp, ctx.guild.id)
+
+    embed = discord.Embed(title="Success!", description=f"Gave {xp} XP to {user.mention}", color=discord.Color.green())
+    await ctx.respond(embed=embed)
 
 
 
