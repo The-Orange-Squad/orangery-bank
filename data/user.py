@@ -207,3 +207,20 @@ class User:
     def refresh(self):
         self.load(self.id)
         return True
+
+    def lose_xp(self, amount, guildid):
+        # a tad bit complicated, as we'll also need to check if the user levels down
+        if not guildid in self.xp:
+            self.xp[guildid] = 0
+
+        if not guildid in self.lvl:
+            self.lvl[guildid] = 0
+        
+        self.xp[guildid] -= amount
+        # if the user has negative xp, they'll level down
+        while self.xp[guildid] < 0:
+            if self.lvl[guildid] == 0:
+                self.xp[guildid] = 0
+                break
+            self.lvl[guildid] -= 1
+            self.xp[guildid] += self.getxpreq(self.lvl[guildid])
