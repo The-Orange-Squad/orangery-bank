@@ -69,7 +69,9 @@ async def on_ready():
         print(guilds.name + " | " + colorizer.colorize(str(guilds.id), "cyan"))
     
 @bot.slash_command(name="balance", description="Check the balance of the specified user")
-async def balance(ctx, user: Option(User, "The user to check the balance of", required=True)):
+async def balance(ctx, user: Option(User, "The user to check the balance of", required=True) = None):
+    if user == None:
+        user = ctx.author
     await ctx.defer()
     user_ = User()
     user_.load(user.id)
@@ -301,7 +303,9 @@ class invLRView(View):
         await interaction.response.edit_message(embed=self.embed, view=self)
 
 @bot.slash_command(name="inventory", description="View the inventory of the specified user")
-async def inventory(ctx, user: Option(User, "The user to check the inventory of", required=True)):
+async def inventory(ctx, user: Option(User, "The user to check the inventory of", required=True) = None):
+    if user == None:
+        user = ctx.author
     author = User()
     author.load(ctx.author.id)
     if author.banned:
@@ -380,6 +384,8 @@ def generatePB(curr, max):
 @bot.slash_command(name="rank", description="Check the rank of the specified user")
 async def rank(ctx, user: Option(User, "The user to check the rank of", required=True), advanced: Option(bool, "Whether to show the rank in an advanced way", required=False, default=False)):
     await ctx.defer()
+    if user == None:
+        user = ctx.author
     author = User()
     author.load(ctx.author.id)
     if author.banned:
