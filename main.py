@@ -93,7 +93,7 @@ class ShopLRView(View):
         user = User()
         user.load(ctx.author.id)
         self.user = user
-        self.inventory = user.inventory[guildid]
+        self.inventory = user.get_inventory(guildid)
 
     async def pre_rendder(self):
         self.embed.clear_fields()
@@ -309,7 +309,7 @@ async def inventory(ctx, user: Option(User, "The user to check the inventory of"
     await ctx.defer()
     user_ = User()
     user_.load(user.id)
-    if not user_.inventory[ctx.guild.id] or user_.inventory[ctx.guild.id] == {}:
+    if not user_.get_inventory(ctx.guild.id) or user_.get_inventory(ctx.guild.id) == {}:
         embed = discord.Embed(title="Error!", description="This user has no items in their inventory", color=discord.Color.red())
         await ctx.respond(embed=embed)
         return
@@ -575,13 +575,38 @@ async def dice(ctx, bet: int, number: Option(int, "The number to bet on", requir
         embed = discord.Embed(title="Error!", description="You can only bet on numbers between 1 and 6", color=discord.Color.red())
         await ctx.respond(embed=embed)
         return
-    result = random.randint(1, 6)
+    results = []
+    for i in range(6):
+        results.append(random.randint(1, 6))
+    
+    results_str = []
+    for i in results:
+        if i == number:
+            results_str.append('win')
+        else:
+            results_str.append('lose')
+    
+    outcome = 0
+    for i in results_str:
+        if i == 'win':
+            outcome += 1
+        if i == 'lose':
+            outcome -= 1
+    
+    # the result is based off the outcome
+    # if the outcome is positive, the user wins
+    # if the outcome is negative, the user loses
+    # if the outcome is 0, the user gets their money back
     user.edit_money(-bet, ctx.guild.id)
-    if result == number:
+    if outcome > 0:
         user.edit_money(bet * 2, ctx.guild.id)
-        embed = discord.Embed(title="Success!", description=f"The dice landed on {result}! You won {bet * 2} {constructCurrName()}", color=discord.Color.green())
+        # show all results
+        embed = discord.Embed(title="Success!", description=f"The dice landed on {results[0]}, {results[1]}, {results[2]}, {results[3]}, {results[4]}, {results[5]}! You won {bet * 2} {constructCurrName()}", color=discord.Color.green())
+    elif outcome < 0:
+        embed = discord.Embed(title="Failure!", description=f"The dice landed on {results[0]}, {results[1]}, {results[2]}, {results[3]}, {results[4]}, {results[5]}! You lost {bet} {constructCurrName()}", color=discord.Color.red())
     else:
-        embed = discord.Embed(title="Failure!", description=f"The dice landed on {result}! You lost {bet} {constructCurrName()}", color=discord.Color.red())
+        user.edit_money(bet, ctx.guild.id)
+        embed = discord.Embed(title="Draw!", description=f"The dice landed on {results[0]}, {results[1]}, {results[2]}, {results[3]}, {results[4]}, {results[5]}! You got your money back", color=discord.Color.blue())
     await ctx.respond(embed=embed)
 
 @bot.user_command(name="View Balance", description="View the balance of the specified user")
