@@ -18,3 +18,5 @@ c_defwinchance = 0.4 # 40%
 c_defwinreward = [150, 300]
 c_deflosspenalty = 0.2 # of the total balance
 c_deflosspenalty_max = 25000
+
+dailyreward = [100, 200]

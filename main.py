@@ -616,7 +616,7 @@ async def work_error(ctx, error):
     
 
 @bot.slash_command(name="crime", description="Commit a crime to earn money (or fail and lose money)")
-@commands.cooldown(1, 86400, commands.BucketType.user)  # 24 hours cooldown
+@commands.cooldown(1, 43200, commands.BucketType.user)  # 12 hours cooldown
 async def crime(ctx, risk: Option(int, "The risk level of the crime.", required=True, choices=[1, 2, 3])):
     await ctx.defer()
     user = User()
@@ -648,6 +648,24 @@ async def crime_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         embed = discord.Embed(title="Error!", description=f"You need to wait {error.retry_after} seconds before committing a crime again", color=discord.Color.red())
         await ctx.respond(embed=embed)
+    
+@bot.slash_command(name="daily", description="Claim your daily reward")
+@commands.cooldown(1, 86400, commands.BucketType.user)  # 24 hours cooldown
+async def daily(ctx):
+    await ctx.defer()
+    user = User()
+    user.load(ctx.author.id)
+
+    if user.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+
+    reward = random.randint(linker.dailyreward[0], linker.dailyreward[1])
+    reward *= user.getmodifiers(ctx.guild.id)
+    user.edit_money(reward, ctx.guild.id)
+    embed = discord.Embed(title="Success!", description=f"Claimed your daily reward and received {reward} {constructCurrName()}", color=discord.Color.green())
+    await ctx.respond(embed=embed)
 
 
 
