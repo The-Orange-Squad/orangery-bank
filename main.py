@@ -867,4 +867,10 @@ async def on_message(message):
     else:
         pass
 
+@bot.event
+async def on_member_join(member):
+    user = User()
+    user.load(member.id)
+    user.save()
+
 bot.run(TOKEN)
