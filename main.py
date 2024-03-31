@@ -1005,7 +1005,7 @@ async def setup_unignorechannel(ctx):
 
 
 @bot.slash_command(name='help', description='Get help on how to use the bot')
-async def help(ctx, aspect: Option(str, "The aspect of the bot you need help with", required=False, choices=["money", "leveling", "items", "gambling", "other"], default="commands")):
+async def help(ctx, aspect: Option(str, "The aspect of the bot you need help with", required=False, choices=["money", "leveling", "items", "gambling", "other"], default="money")):
     await ctx.defer()
     embed = discord.Embed(title=f"Help ({aspect})", description="Here's how you can use the bot!")
     # List commands for each aspect and what they do
@@ -1038,7 +1038,7 @@ async def help(ctx, aspect: Option(str, "The aspect of the bot you need help wit
         embed.add_field(name="[View Balance]", value="View the balance of the specified user (right-click on a user)", inline=False)
         embed.add_field(name="[View Rank]", value="View the rank of the specified user (right-click on a user)", inline=False)
         embed.add_field(name="[View Inventory]", value="View the inventory of the specified user (right-click on a user)", inline=False)
-
+    await ctx.respond(embed=embed)
 
 
 @bot.event
