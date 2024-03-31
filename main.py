@@ -597,9 +597,13 @@ async def dice(ctx, bet: int, number: Option(int, "The number to bet on", requir
     # if the outcome is 0, the user gets their money back
     user.edit_money(-bet, ctx.guild.id)
     if outcome > 0:
-        user.edit_money(bet * 2, ctx.guild.id)
+        reward = 0
+        for i in results_str:
+            if i == 'win':
+                reward += bet / 6
+        user.edit_money(round(reward * 2), ctx.guild.id)
         # show all results
-        embed = discord.Embed(title="Success!", description=f"The dice landed on {results[0]}, {results[1]}, {results[2]}, {results[3]}, {results[4]}, {results[5]}! You won {bet * 2} {constructCurrName()}", color=discord.Color.green())
+        embed = discord.Embed(title="Success!", description=f"The dice landed on {results[0]}, {results[1]}, {results[2]}, {results[3]}, {results[4]}, {results[5]}! You won {round(reward * 2)} {constructCurrName()}", color=discord.Color.green())
     elif outcome <= 0:
         embed = discord.Embed(title="Failure!", description=f"The dice landed on {results[0]}, {results[1]}, {results[2]}, {results[3]}, {results[4]}, {results[5]}! You lost {bet} {constructCurrName()}", color=discord.Color.red())
     await ctx.respond(embed=embed)
