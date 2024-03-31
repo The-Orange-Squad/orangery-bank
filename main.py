@@ -309,6 +309,10 @@ async def inventory(ctx, user: Option(User, "The user to check the inventory of"
     await ctx.defer()
     user_ = User()
     user_.load(user.id)
+    if not user_.inventory[ctx.guild.id] or user_.inventory[ctx.guild.id] == {}:
+        embed = discord.Embed(title="Error!", description="This user has no items in their inventory", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
     embed = discord.Embed(title=f"{user.name}'s inventory", description="Here's what's in the inventory!")
     lrv = invLRView(ctx, embed, user_.get_inventory(ctx.guild.id))
     await lrv.pre_rendder()
