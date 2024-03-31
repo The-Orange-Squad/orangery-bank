@@ -583,6 +583,27 @@ async def leaderboard(ctx, option: Option(str, "The leaderboard option", require
     await ctx.respond(embed=embed)
 
 
+@bot.slash_command(name="work", description="Work to earn money")
+@commands.cooldown(1, 43200, commands.BucketType.user)  # 12 hours cooldown
+async def work(ctx):
+    await ctx.defer()
+    user = User()
+    user.load(ctx.author.id)
+
+    if user.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+
+    reward = random.randint(linker.w_rewardrange[0], linker.w_rewardrange[1])
+    reward *= user.getmodifiers(ctx.guild.id)
+
+    user.edit_money(reward, ctx.guild.id)
+    embed = discord.Embed(title="Success!", description=f"You worked and earned {reward} {constructCurrName()}", color=discord.Color.green())
+
+    await ctx.respond(embed=embed)
+
+
 
 
 

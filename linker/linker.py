@@ -9,3 +9,6 @@ rewardrange = [25, 100]
 effortboost = True
 eb_max = 5
 eb_req = 400
+
+#work
+w_rewardrange = [50, 200]
