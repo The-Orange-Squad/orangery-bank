@@ -632,7 +632,7 @@ async def view_inventory(ctx, user: discord.User):
     await ctx.respond(embed=embed, view=lrv)
 
 @bot.slash_command(name="leaderboard", description="View the leaderboard of the server")
-async def leaderboard(ctx, option: Option(str, "The leaderboard option", required=False, choices=["balance", "level"])):
+async def leaderboard(ctx, option: Option(str, "The leaderboard option", required=False, choices=["balance", "level"], default="balance")):
     # This takes a while to load, so we defer the response
     await ctx.defer()
     author = User()
