@@ -51,14 +51,14 @@ def execute_func_with_string(func_str, parameters):
     else:
         raise ValueError(f"Function '{func_name.strip()}' not found in the global context.")
 
-def constructCurrName():
+def constructCurrName(withemoji=True):
     if linker.needicon:
         hostguild = bot.get_guild(linker.hostguildid)
         mojis = hostguild.emojis
         for moji in mojis:
             if moji.id == linker.emojiid:
                 emoji = str(moji)
-        return f"{linker.currname} {emoji}"
+        return f"{linker.currname} {emoji}" if withemoji else linker.currname
     return linker.currname
 
 @bot.event
