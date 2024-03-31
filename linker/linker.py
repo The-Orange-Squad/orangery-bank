@@ -24,3 +24,4 @@ dailyreward = [100, 200]
 m_basicreward = [75, 200]
 m_bitempool = [0, 6]
 m_mboxid = 9
+m_maxmoney = 9999999

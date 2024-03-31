@@ -361,8 +361,20 @@ async def sell(ctx, item: Option(str, "The item to sell", required=True, autocom
     embed.set_footer(text=f"You sold this for {price} {linker.currname}, which is {str(abspricediff) + ' ' if temptext != 'the same as' else ''}{linker.currname + ' ' if temptext != 'the same as' else ''}{temptext} the average price")
     await ctx.respond(embed=embed)
 
+def generatePB(curr, max):
+    emojis = ("🟩", "⬛")
+    pb = ""
+    percentage = round((curr / max) * 100)
+    for i in range(10):
+        if i < percentage // 10:
+            pb += emojis[0]
+        else:
+            pb += emojis[1]
+    
+    return pb
+
 @bot.slash_command(name="rank", description="Check the rank of the specified user")
-async def rank(ctx, user: Option(User, "The user to check the rank of", required=True)):
+async def rank(ctx, user: Option(User, "The user to check the rank of", required=True), visual: Option(bool, "Whether to show the rank visually", required=False, default=False)):
     await ctx.defer()
     author = User()
     author.load(ctx.author.id)
@@ -370,7 +382,32 @@ async def rank(ctx, user: Option(User, "The user to check the rank of", required
         embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
     user_ = User()
     user_.load(user.id)
-    embed = discord.Embed(title=f"{user.name}'s rank", description=f"Level: {user_.get_lvl(ctx.guild.id)}\nXP: {user_.get_xp(ctx.guild.id)} / {round(user_.getxpreq(user_.get_lvl(ctx.guild.id)))}\nMessage Count: {user_.get_msgc(ctx.guild.id)}", color=discord.Color.random())
+    if not visual:
+        embed = discord.Embed(title=f"{user.name}'s rank", description=f"Level: {user_.get_lvl(ctx.guild.id)}\nXP: {user_.get_xp(ctx.guild.id)} / {round(user_.getxpreq(user_.get_lvl(ctx.guild.id)))}\nMessage Count: {user_.get_msgc(ctx.guild.id)}", color=discord.Color.random())
+    else:
+        # visual rank also shows the next reward (level) and how close you are to it, also shows how close you are to the next level, and shows how much money you need to get before reaching the top
+        # additionally, below each stat, an emoji progress bar is shown
+        # the progress bar is 10 emojis long and is filled wtih a green emoji. empty spaces are filled with a black emoji
+        # the progress bar is filled based on the percentage of the stat rounded to the nearest 10
+        
+        embed = discord.Embed(title=f"Detailed Rank", description="See below for a detailed view of your rank")
+        lvl = user_.get_lvl(ctx.guild.id)
+        rr = RewardRoles()
+        rr.load()
+        rrlist = rr.roles[ctx.guild.id]
+        # level data + what's your progress to the next reward (if you're not already at the highest reward)
+        embed.add_field(name="Level", value=f"{lvl}\n\nNext Reward:\n{rrlist[lvl] if lvl in rrlist else 'None'}\nProgress:\n{generatePB(lvl, len(rrlist))}", inline=False)
+        # xp data + how many xp you need for the next level
+        xp = user_.get_xp(ctx.guild.id)
+        embed.add_field(name="XP", value=f"{xp} / {round(user_.getxpreq(lvl))}\n\nProgress:\n{generatePB(user_.get_xp(ctx.guild.id), round(user_.getxpreq(lvl)))}", inline=False)
+        # message count data
+        msgc = user_.get_msgc(ctx.guild.id)
+        embed.add_field(name="Message Count", value=f"{msgc}", inline=False)
+        # money data
+        money = user_.get_balance(ctx.guild.id)
+        embed.add_field(name="Money", value=f"{money} {constructCurrName()}\n\nCapacity Used:\n{generatePB(user_.get_balance(ctx.guild.id), linker.m_maxmoney)}", inline=False)
+
+
     await ctx.respond(embed=embed)
 
 @bot.slash_command(name='lvlreward', description='Set a role to be given to a user when they reach a certain level')
