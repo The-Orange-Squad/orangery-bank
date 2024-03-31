@@ -694,49 +694,7 @@ async def daily_error(ctx, error):
         # in hours
         embed = discord.Embed(title="Error!", description=f"You can only claim your daily reward daily (self-explanatory). Please wait {round(error.retry_after / 3600)} hours before claiming it again", color=discord.Color.red())
         await ctx.respond(embed=embed)
-
-
-
-@bot.event
-async def on_message(message):
-    if message.author.bot:
-        return
-    user = User()
-    user.load(message.author.id)
-    user.give_msgc(message.guild.id)
-    user.save()
-    if LastMessage.is_passed(message.author.id, linker.msgtimeout, message.guild.id):
-        xprandom = random.randint(linker.xprange[0], linker.xprange[1])
-        if linker.effortboost:
-            # Based on the amount of characters in the message, determine the multiplier. Required characters: eb_req, max multiplier: eb_max
-            if len(message.content) >= linker.eb_req:
-                # also multiply the random xp by the multiplier
-                mul = len(message.content) / linker.eb_req
-                if mul > linker.eb_max:
-                    mul = linker.eb_max
-                
-                xprandom = round(xprandom * mul)
-        resp = user.give_xp(xprandom, message.guild.id)
-        print(f"Gave {xprandom} xp to {message.author.name}")
-        LastMessage.set_lastmsgtime(message.author.id, message.guild.id)
-        if resp == "newlvl":
-            embed = discord.Embed(title="Level Up!", description=f"{message.author.mention} has leveled up to level {user.get_lvl(message.guild.id)}!", color=discord.Color.green())
-            # Formula: Level * random(reward range min to reward range max) * (user modifier / 2) = reward
-            reward = round(user.get_lvl(message.guild.id) * random.randint(linker.rewardrange[0], linker.rewardrange[1]) * (user.get_mod(message.guild.id) / 2))
-            reward *= user.getmodifiers(message.guild.id)
-            user.edit_money(reward, message.guild.id)
-            
-            embed.add_field(name="Reward", value=f"Received {reward} {constructCurrName()}", inline=False)
-            if rr.hasreward(user.get_lvl(message.guild.id), message.guild.id):
-                role = rr.get(user.get_lvl(message.guild.id), message.guild.id)
-                try:
-                    await message.author.add_roles(discord.utils.get(message.guild.roles, id=role))
-                    embed.add_field(name="Reward Role", value=f"As an additional reward, you have been given the role {discord.utils.get(message.guild.roles, id=role).mention}", inline=False)
-                except:
-                    embed.add_field(name="Reward Role", value=f"We wanted to give you the role {discord.utils.get(message.guild.roles, id=role).mention} as an additional reward, but an error occurred", inline=False)
-            await message.channel.send(embed=embed)
-    else:
-        pass
+    
 
 def open_giftbox(ctx):
     print(colorizer.colorize("Opening gift box...", "yellow"))
@@ -865,5 +823,48 @@ async def use(ctx, item: Option(str, "The item to use", required=True, autocompl
     else:
         embed = discord.Embed(title="Error!", description="This item cannot be used", color=discord.Color.red())
         await ctx.respond(embed=embed)
+
+
+
+@bot.event
+async def on_message(message):
+    if message.author.bot:
+        return
+    user = User()
+    user.load(message.author.id)
+    user.give_msgc(message.guild.id)
+    user.save()
+    if LastMessage.is_passed(message.author.id, linker.msgtimeout, message.guild.id):
+        xprandom = random.randint(linker.xprange[0], linker.xprange[1])
+        if linker.effortboost:
+            # Based on the amount of characters in the message, determine the multiplier. Required characters: eb_req, max multiplier: eb_max
+            if len(message.content) >= linker.eb_req:
+                # also multiply the random xp by the multiplier
+                mul = len(message.content) / linker.eb_req
+                if mul > linker.eb_max:
+                    mul = linker.eb_max
+                
+                xprandom = round(xprandom * mul)
+        resp = user.give_xp(xprandom, message.guild.id)
+        print(f"Gave {xprandom} xp to {message.author.name}")
+        LastMessage.set_lastmsgtime(message.author.id, message.guild.id)
+        if resp == "newlvl":
+            embed = discord.Embed(title="Level Up!", description=f"{message.author.mention} has leveled up to level {user.get_lvl(message.guild.id)}!", color=discord.Color.green())
+            # Formula: Level * random(reward range min to reward range max) * (user modifier / 2) = reward
+            reward = round(user.get_lvl(message.guild.id) * random.randint(linker.rewardrange[0], linker.rewardrange[1]) * (user.get_mod(message.guild.id) / 2))
+            reward *= user.getmodifiers(message.guild.id)
+            user.edit_money(reward, message.guild.id)
+            
+            embed.add_field(name="Reward", value=f"Received {reward} {constructCurrName()}", inline=False)
+            if rr.hasreward(user.get_lvl(message.guild.id), message.guild.id):
+                role = rr.get(user.get_lvl(message.guild.id), message.guild.id)
+                try:
+                    await message.author.add_roles(discord.utils.get(message.guild.roles, id=role))
+                    embed.add_field(name="Reward Role", value=f"As an additional reward, you have been given the role {discord.utils.get(message.guild.roles, id=role).mention}", inline=False)
+                except:
+                    embed.add_field(name="Reward Role", value=f"We wanted to give you the role {discord.utils.get(message.guild.roles, id=role).mention} as an additional reward, but an error occurred", inline=False)
+            await message.channel.send(embed=embed)
+    else:
+        pass
 
 bot.run(TOKEN)
