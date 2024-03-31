@@ -374,7 +374,7 @@ def generatePB(curr, max):
     return pb
 
 @bot.slash_command(name="rank", description="Check the rank of the specified user")
-async def rank(ctx, user: Option(User, "The user to check the rank of", required=True), visual: Option(bool, "Whether to show the rank visually", required=False, default=False)):
+async def rank(ctx, user: Option(User, "The user to check the rank of", required=True), advanced: Option(bool, "Whether to show the rank in an advanced way", required=False, default=False)):
     await ctx.defer()
     author = User()
     author.load(ctx.author.id)
@@ -382,7 +382,7 @@ async def rank(ctx, user: Option(User, "The user to check the rank of", required
         embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
     user_ = User()
     user_.load(user.id)
-    if not visual:
+    if not advanced:
         embed = discord.Embed(title=f"{user.name}'s rank", description=f"Level: {user_.get_lvl(ctx.guild.id)}\nXP: {user_.get_xp(ctx.guild.id)} / {round(user_.getxpreq(user_.get_lvl(ctx.guild.id)))}\nMessage Count: {user_.get_msgc(ctx.guild.id)}", color=discord.Color.random())
     else:
         # visual rank also shows the next reward (level) and how close you are to it, also shows how close you are to the next level, and shows how much money you need to get before reaching the top
