@@ -1004,6 +1004,43 @@ async def setup_unignorechannel(ctx):
     await ctx.respond(embed=embed)
 
 
+@bot.slash_command(name='help', description='Get help on how to use the bot')
+async def help(ctx, aspect: Option(str, "The aspect of the bot you need help with", required=False, choices=["money", "leveling", "items", "gambling", "other"], default="commands")):
+    await ctx.defer()
+    embed = discord.Embed(title=f"Help ({aspect})", description="Here's how you can use the bot!")
+    # List commands for each aspect and what they do
+    if aspect == "money":
+        embed.add_field(name="`/balance`", value="View your (or someone else's) balance", inline=False)
+        embed.add_field(name="`/daily`", value="Claim your daily reward", inline=False)
+        embed.add_field(name="`/work`", value="Work to earn money", inline=False)
+        embed.add_field(name="`/crime`", value="Commit a crime to earn money (or fail and lose money)", inline=False)
+        embed.add_field(name="`/coinflip`", value="Flip a coin", inline=False)
+        embed.add_field(name="`/dice`", value="Roll a dice", inline=False)
+    elif aspect == "leveling":
+        embed.description += "Leveling up is based on the amount of XP you have. You can gain XP by sending messages in channels that are not ignored for XP gain. You can also receive XP from daily rewards, working, and committing crimes. When you level up, you receive a reward based on your level and you can also receive a role if the server owner has set it up."
+        embed.add_field(name="`/rank`", value="View your (or someone else's) rank", inline=False)
+        embed.add_field(name="`/leaderboard`", value="View the leaderboard of the server", inline=False)
+        embed.add_field(name="`/lvlrewards`", value="View all the level rewards set for the server", inline=False)
+        embed.add_field(name="`/lvlrewardremove`", value="Remove a role that is given to a user when they reach a certain level", inline=False)
+    elif aspect == "items":
+        embed.description += "Items can be used for various purposes, such as gaining XP, money, or other items. You can view your inventory with `/inventory` and use items with `/use`."
+        embed.add_field(name="`/inventory`", value="View your inventory", inline=False)
+        embed.add_field(name="`/use`", value="Use an item from your inventory", inline=False)
+        embed.add_field(name="`/shop`", value="View the shop", inline=False)
+    elif aspect == "gambling":
+        embed.description += "You can gamble your money with the `/coinflip` and `/dice` commands. You can also open a gift box with the `/giftbox` command."
+        embed.add_field(name="`/coinflip`", value="Flip a coin", inline=False)
+        embed.add_field(name="`/dice`", value="Roll a dice", inline=False)
+        embed.add_field(name="`/giftbox`", value="Open a gift box", inline=False)
+    elif aspect == "other":
+        embed.description += "Other commands that don't fit into the other categories."
+        embed.add_field(name="`/help`", value="Get help on how to use the bot", inline=False)
+        embed.add_field(name="[View Balance]", value="View the balance of the specified user (right-click on a user)", inline=False)
+        embed.add_field(name="[View Rank]", value="View the rank of the specified user (right-click on a user)", inline=False)
+        embed.add_field(name="[View Inventory]", value="View the inventory of the specified user (right-click on a user)", inline=False)
+
+
+
 @bot.event
 async def on_message(message):
     if message.author.bot:
