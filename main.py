@@ -31,6 +31,26 @@ LastMessage.load()
 rr = RewardRoles()
 rr.load()
 
+def execute_func_with_string(func_str, parameters):
+    func_name, params = func_str.split('(')
+    params = params.rstrip(')')
+    param_values = []
+    
+    if params.strip() != "":
+        param_names = params.split(',')
+        for param_name in param_names:
+            param_name = param_name.strip()
+            if param_name in parameters:
+                param_values.append(parameters[param_name])
+            else:
+                raise ValueError(f"Parameter '{param_name}' not found in the current context.")
+    
+    if func_name.strip() in globals():
+        func = globals()[func_name.strip()]
+        func(*param_values)
+    else:
+        raise ValueError(f"Function '{func_name.strip()}' not found in the global context.")
+
 def constructCurrName():
     if linker.needicon:
         hostguild = bot.get_guild(linker.hostguildid)
@@ -717,5 +737,54 @@ async def on_message(message):
             await message.channel.send(embed=embed)
     else:
         pass
+
+def open_giftbox(ctx):
+    print(colorizer.colorize("Opening gift box...", "yellow"))
+    user = User()
+    user.load(ctx.author.id)
+    if user.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+        return embed
+    # get random item from shop
+    itemlist = shop.get_processed()
+    item = random.choice(list(itemlist.keys()))
+    print(colorizer.colorize(f"Received {item} from the gift box", "green"))
+    amount = 1
+    user.add_item(item, amount, ctx.guild.id)
+    embed = discord.Embed(title="Success!", description=f"Opened the gift box and received {amount} {shop.pair(item)}", color=discord.Color.green())
+    return embed
+
+@bot.slash_command(name='use', description='Use an item from your inventory')
+async def use(ctx, item: Option(str, "The item to use", required=True, autocomplete=discord.utils.basic_autocomplete(shopAutoComplete))):
+    await ctx.defer()
+    user = User()
+    user.load(ctx.author.id)
+    if user.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    if item not in user.inventory[ctx.guild.id]:
+        embed = discord.Embed(title="Error!", description="You don't own this item", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    itemlist = shop.get_processed()
+    item_data = itemlist.get(item)
+    if item_data and item_data.get("funcstr"):
+        # Pass context variables and user-defined parameters to the exec
+        exec_globals = globals().copy()
+        exec_globals.update({"ctx": ctx, "user": user, "item_data": item_data})
+        try:
+            returned = eval(item_data["funcstr"], exec_globals)
+        except Exception as e:
+            embed = discord.Embed(title="Error!", description=str(e), color=discord.Color.red())
+            await ctx.respond(embed=embed)
+            return
+        # You may want to handle the return value from the executed function here
+        # For simplicity, I'll assume the function updates user inventory and returns an embed
+        await ctx.respond(embed=returned)
+        user.remove_item(item, 1, ctx.guild.id)
+    else:
+        embed = discord.Embed(title="Error!", description="This item cannot be used", color=discord.Color.red())
+        await ctx.respond(embed=embed)
 
 bot.run(TOKEN)
