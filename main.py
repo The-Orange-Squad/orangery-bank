@@ -590,8 +590,6 @@ async def dice(ctx, bet: int, number: Option(int, "The number to bet on", requir
     for i in results_str:
         if i == 'win':
             outcome += 1
-        if i == 'lose':
-            outcome -= 1
     
     # the result is based off the outcome
     # if the outcome is positive, the user wins
@@ -602,11 +600,8 @@ async def dice(ctx, bet: int, number: Option(int, "The number to bet on", requir
         user.edit_money(bet * 2, ctx.guild.id)
         # show all results
         embed = discord.Embed(title="Success!", description=f"The dice landed on {results[0]}, {results[1]}, {results[2]}, {results[3]}, {results[4]}, {results[5]}! You won {bet * 2} {constructCurrName()}", color=discord.Color.green())
-    elif outcome < 0:
+    elif outcome <= 0:
         embed = discord.Embed(title="Failure!", description=f"The dice landed on {results[0]}, {results[1]}, {results[2]}, {results[3]}, {results[4]}, {results[5]}! You lost {bet} {constructCurrName()}", color=discord.Color.red())
-    else:
-        user.edit_money(bet, ctx.guild.id)
-        embed = discord.Embed(title="Draw!", description=f"The dice landed on {results[0]}, {results[1]}, {results[2]}, {results[3]}, {results[4]}, {results[5]}! You got your money back", color=discord.Color.blue())
     await ctx.respond(embed=embed)
 
 @bot.user_command(name="View Balance", description="View the balance of the specified user")
