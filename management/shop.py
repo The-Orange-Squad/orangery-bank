@@ -7,31 +7,38 @@ class Shop:
         self.items = {
             "🍎 Apple": {
                 "price": 10,
-                "desc": "A juicy red apple. Ahh, classic."
+                "desc": "A juicy red apple. Ahh, classic.",
+                "funcstr": "eat(ctx)"
             },
             "🍌 Banana": {
                 "price": 15,
-                "desc": "A ripe yellow banana. Don't slip!"
+                "desc": "A ripe yellow banana. Don't slip!",
+                "funcstr": "eat(ctx)"
             },
             "🍊 Orange": {
                 "price": 20,
-                "desc": "A sweet orange. No, The Orange Squad is not named after this."
+                "desc": "A sweet orange. No, The Orange Squad is not named after this.",
+                "funcstr": "eat(ctx)"
             },
             "🍇 Grape": {
                 "price": 18,
-                "desc": "A bunch of grapes. They're not sour, don't worry."
+                "desc": "A bunch of grapes. They're not sour, don't worry.",
+                "funcstr": "eat(ctx)"
             },
             "🍉 Watermelon": {
                 "price": 25,
-                "desc": "A big watermelon. It's heavy!"
+                "desc": "A big watermelon. It's heavy!",
+                "funcstr": "eat(ctx)"
             },
             "🍓 Strawberry": {
                 "price": 12,
-                "desc": "A red strawberry. Often used in desserts, and for a reason."
+                "desc": "A red strawberry. Often used in desserts, and for a reason.",
+                "funcstr": "eat(ctx)"
             },
             "🍑 Peach": {
                 "price": 22,
-                "desc": "A soft peach. Fuzzy thing!"
+                "desc": "A soft peach. Fuzzy thing!",
+                "funcstr": "eat(ctx)"
             },
             "🎁 Gift Box": {
                 "price": 400,
