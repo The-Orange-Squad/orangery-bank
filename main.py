@@ -601,6 +601,11 @@ async def work(ctx):
     user.edit_money(reward, ctx.guild.id)
     embed = discord.Embed(title="Success!", description=f"You worked and earned {reward} {constructCurrName()}", color=discord.Color.green())
 
+    if random.random() < linker.w_xpchance:
+        xp = random.randint(linker.w_xprewardrange[0], linker.w_xprewardrange[1])
+        user.give_xp(xp, ctx.guild.id)
+        embed.add_field(name="XP Reward (Bonus!)", value=f"Received {xp} XP", inline=False)
+
     await ctx.respond(embed=embed)
 
 @work.error
