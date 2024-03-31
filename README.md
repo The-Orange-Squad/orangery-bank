@@ -9,6 +9,7 @@ Orangery Bank is an open-source version of Orange Bank used in The Orange Squad,
 - Currency databases
 - Rewards
 - Shop system
+- Usable Items
 
 ### Levelling System and Rewards
 
