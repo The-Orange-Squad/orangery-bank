@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os
 from management.shop import Shop
 from management.modlist import GuildSetup
-from data.user import User
+from data.user import User, XPBoostTimestamp
 from colorizer.colorizer import Colorizer
 from linker import linker
 import discord
