@@ -1050,6 +1050,7 @@ async def on_message(message):
         user.load(message.author.id)
         user.reset_xpboost(message.guild.id)
         user.save()
+        XPBoostTimestamp.remove(message.author.id)
     if message.author.bot:
         return
     user = User()
