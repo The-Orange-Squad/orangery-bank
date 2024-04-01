@@ -1051,6 +1051,25 @@ async def help(ctx, aspect: Option(str, "The aspect of the bot you need help wit
         embed.add_field(name="[View Inventory]", value="View the inventory of the specified user (right-click on a user)", inline=False)
     await ctx.respond(embed=embed)
 
+@bot.slash_command(name="search", description="Search for an item in the shop")
+async def search(ctx, item: str):
+    # this function lists all items that contain the search term
+    await ctx.defer()
+    itemlist = shop.get_processed()
+    items = []
+    for i in itemlist.keys():
+        if item.lower() in i.lower():
+            items.append(i)
+    if len(items) == 0:
+        embed = discord.Embed(title="Error!", description="No items found", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    
+    embed = discord.Embed(title="Search Results", description="Here are the items that contain the search term")
+    for item in items:
+        embed.add_field(name=item, value=f"Price: {itemlist[item]['price']} {constructCurrName()}", inline=False)
+    await ctx.respond(embed=embed)
+
 
 @bot.event
 async def on_message(message):
