@@ -871,6 +871,17 @@ def open_mbox(ctx):
         embed = discord.Embed(title="There was a thief!", description=f"Opened the mystery box and lost {loss} {constructCurrName()}", color=discord.Color.red())
     return embed
 
+def read_book(ctx):
+    user = User()
+    user.load(ctx.author.id)
+    if user.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+        return embed
+    xp = random.randint(linker.w_rewardrange[0], linker.w_rewardrange[1])
+    user.give_xp(xp, ctx.guild.id)
+    embed = discord.Embed(title="Read a book!", description=f"Read a book and received {xp} XP", color=discord.Color.green())
+    return embed
+
 
 @bot.slash_command(name='use', description='Use an item from your inventory')
 async def use(ctx, item: Option(str, "The item to use", required=True, autocomplete=discord.utils.basic_autocomplete(shopAutoComplete))):
