@@ -5,6 +5,58 @@ import time
 basexpreq = 100
 basexpreqmod = 1.5  # only applied at lvl 2+
 
+class XPBoostTimestamp:
+    def __init__(self):
+        self.id = "undefined"
+        self.timestamps = {}
+    
+    def save(self):
+        with open(f"data/xpboost/{self.id}.json", "w") as f:
+            json.dump(self.__dict__, f)
+    
+    def load(self, id):
+        self.id = id
+        filename = f"data/xpboost/{id}.json"
+        if os.path.exists(filename):
+            with open(filename, "r") as f:
+                data = json.load(f)
+                self.timestamps = data.get("timestamps", {})
+                temp = {}
+                for key in self.timestamps:
+                    temp[int(key)] = self.timestamps[key]
+                return True
+        else:
+            self.save()
+            return False
+    
+    def exists(self, id):
+        filename = f"data/xpboost/{id}.json"
+        return os.path.exists(filename)
+    
+    def add(self, guildid, timestamp):
+        self.timestamps[guildid] = timestamp
+        self.save()
+    
+    def get(self, guildid):
+        if not guildid in self.timestamps:
+            self.timestamps[guildid] = 0
+        return self.timestamps[guildid]
+    
+    def remove(self, guildid):
+        del self.timestamps[guildid]
+        self.save()
+    
+    def reset(self):
+        self.timestamps = {}
+        self.save()
+    
+    def unload(self):
+        self.__init__()
+        return True
+    
+    def is_over(self, guildid):
+        return self.timestamps[guildid] < time.time()
+
 class User:
     def __init__(self):
         self.id = "undefined"
@@ -245,55 +297,3 @@ class User:
         self.xpboost[guildid] = 1
         self.save()
     
-
-class XPBoostTimestamp:
-    def __init__(self):
-        self.id = "undefined"
-        self.timestamps = {}
-    
-    def save(self):
-        with open(f"data/xpboost/{self.id}.json", "w") as f:
-            json.dump(self.__dict__, f)
-    
-    def load(self, id):
-        self.id = id
-        filename = f"data/xpboost/{id}.json"
-        if os.path.exists(filename):
-            with open(filename, "r") as f:
-                data = json.load(f)
-                self.timestamps = data.get("timestamps", {})
-                temp = {}
-                for key in self.timestamps:
-                    temp[int(key)] = self.timestamps[key]
-                return True
-        else:
-            self.save()
-            return False
-    
-    def exists(self, id):
-        filename = f"data/xpboost/{id}.json"
-        return os.path.exists(filename)
-    
-    def add(self, guildid, timestamp):
-        self.timestamps[guildid] = timestamp
-        self.save()
-    
-    def get(self, guildid):
-        if not guildid in self.timestamps:
-            self.timestamps[guildid] = 0
-        return self.timestamps[guildid]
-    
-    def remove(self, guildid):
-        del self.timestamps[guildid]
-        self.save()
-    
-    def reset(self):
-        self.timestamps = {}
-        self.save()
-    
-    def unload(self):
-        self.__init__()
-        return True
-    
-    def is_over(self, guildid):
-        return self.timestamps[guildid] < time.time()
