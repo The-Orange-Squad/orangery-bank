@@ -105,7 +105,7 @@ class ShopLRView(View):
                 addedtext = f" (You already own {self.inventory[item]})"
             else:
                 addedtext = ""
-            self.embed.add_field(name=f"{shop.pair(item)} | Price: {self.list[shop.pair(item)]['price']}", value=self.list[shop.pair(item)]['desc'] + addedtext, inline=False)
+            self.embed.add_field(name=f"{shop.pair(item)} ({shop.get_type(item)}) | Price: {self.list[shop.pair(item)]['price']}", value=self.list[shop.pair(item)]['desc'] + addedtext, inline=False)
         return self.embed
     
     # Adds ⬅️ Left and Right ➡️ buttons to the view, all items are split into pages of 5
@@ -122,7 +122,7 @@ class ShopLRView(View):
                 addedtext = f" (You already own {self.inventory[item]})"
             else:
                 addedtext = ""
-            self.embed.add_field(name=f"{shop.pair(item)} | Price: {self.list[shop.pair(item)]['price']}", value=self.list[shop.pair(item)]['desc'] + addedtext, inline=False)
+            self.embed.add_field(name=f"{shop.pair(item)} ({shop.get_type(item)}) | Price: {self.list[shop.pair(item)]['price']}", value=self.list[shop.pair(item)]['desc'] + addedtext, inline=False)
         await interaction.response.edit_message(embed=self.embed, view=self)
 
     @discord.ui.button(label="➡️", style=discord.ButtonStyle.primary)
@@ -137,7 +137,7 @@ class ShopLRView(View):
                 addedtext = f" (You already own {self.inventory[item]})"
             else:
                 addedtext = ""
-            self.embed.add_field(name=f"{shop.pair(item)} | Price: {self.list[shop.pair(item)]['price']}", value=self.list[shop.pair(item)]['desc'] + addedtext, inline=False)
+            self.embed.add_field(name=f"{shop.pair(item)} ({shop.get_type(item)}) | Price: {self.list[shop.pair(item)]['price']}", value=self.list[shop.pair(item)]['desc'] + addedtext, inline=False)
         await interaction.response.edit_message(embed=self.embed, view=self)
 
 

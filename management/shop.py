@@ -8,46 +8,55 @@ class Shop:
             "🍎 Apple": {
                 "price": 10,
                 "desc": "A juicy red apple. Ahh, classic.",
+                "type": "food",
                 "funcstr": "eat(ctx)"
             },
             "🍌 Banana": {
                 "price": 15,
                 "desc": "A ripe yellow banana. Don't slip!",
+                "type": "food",
                 "funcstr": "eat(ctx)"
             },
             "🍊 Orange": {
                 "price": 20,
                 "desc": "A sweet orange. No, The Orange Squad is not named after this.",
+                "type": "food",
                 "funcstr": "eat(ctx)"
             },
             "🍇 Grape": {
                 "price": 18,
                 "desc": "A bunch of grapes. They're not sour, don't worry.",
+                "type": "food",
                 "funcstr": "eat(ctx)"
             },
             "🍉 Watermelon": {
                 "price": 25,
                 "desc": "A big watermelon. It's heavy!",
+                "type": "food",
                 "funcstr": "eat(ctx)"
             },
             "🍓 Strawberry": {
                 "price": 12,
                 "desc": "A red strawberry. Often used in desserts, and for a reason.",
+                "type": "food",
                 "funcstr": "eat(ctx)"
             },
             "🍑 Peach": {
                 "price": 22,
                 "desc": "A soft peach. Fuzzy thing!",
+                "type": "food",
                 "funcstr": "eat(ctx)"
             },
             "🎁 Gift Box": {
                 "price": 400,
                 "desc": "A gift box that contains a random item (literally).",
+                "type": "consumable",
                 "funcstr": "open_giftbox(ctx)"
             },
             "📦 Mystery Box": {
                 "price": 500,
                 "desc": "A mystery box... The title says it all. What's inside?",
+                "type": "consumable",
                 "funcstr": "open_mbox(ctx)"
             }
         }
@@ -74,6 +83,9 @@ class Shop:
 
     def get_raw(self):
         return self.items
+
+    def get_type(self, item):
+        return self.processed[item]["type"]
     
     def pair(self, processed):
         # find the item of the same id in the raw dict
