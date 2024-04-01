@@ -1063,7 +1063,7 @@ async def on_message(message):
                 if mul > linker.eb_max:
                     mul = linker.eb_max
                 
-                xprandom = round(xprandom * mul)
+                xprandom = round(xprandom * mul * user.getmodifiers(message.guild.id)) # multiply by the user's modifier
         resp = user.give_xp(xprandom, message.guild.id)
         print(f"Gave {xprandom} xp to {message.author.name}")
         LastMessage.set_lastmsgtime(message.author.id, message.guild.id)
