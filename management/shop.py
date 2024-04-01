@@ -62,7 +62,7 @@ class Shop:
             "📖 Book": {
                 "price": 270,
                 "desc": "The container of knowledge and wisdom. Gives you some XP.",
-                "type": "boost",
+                "type": "consumable",
                 "funcstr": "read_book(ctx)"
             }
         }
