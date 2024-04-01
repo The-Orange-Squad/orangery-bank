@@ -1043,6 +1043,13 @@ async def help(ctx, aspect: Option(str, "The aspect of the bot you need help wit
 
 @bot.event
 async def on_message(message):
+    xpbt = XPBoostTimestamp()
+    xpbt.load(message.author.id)
+    if xpbt.is_over(message.guild.id):
+        user = User()
+        user.load(message.author.id)
+        user.reset_xpboost(message.guild.id)
+        user.save()
     if message.author.bot:
         return
     user = User()
