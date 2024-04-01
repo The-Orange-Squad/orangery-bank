@@ -61,7 +61,7 @@ class Shop:
             },
             "📖 Book": {
                 "price": 270,
-                "desc": "The container of knowledge and wisdom. Boosts XP gain from messages for 1 hour.",
+                "desc": "The container of knowledge and wisdom. Gives you some XP.",
                 "type": "boost",
                 "funcstr": "read_book(ctx)"
             }
