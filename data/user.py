@@ -16,7 +16,6 @@ class User:
         self.lvl = {}
         self.xp = {}
         self.modifiers = {}
-        self.xpboost = {}
 
     def save(self):
         with open(f"data/users/{self.id}.json", "w") as f:
@@ -43,7 +42,6 @@ class User:
                 self.lvl = data.get("lvl", {})
                 self.xp = data.get("xp", {})
                 self.modifiers = data.get("modifiers", {})
-                self.xpboost = data.get("xpboost", {})
                 temp = {}
                 # for all dicts, convert the keys to int
                 for key in self.balance:
@@ -69,10 +67,6 @@ class User:
                 for key in self.modifiers:
                     temp[int(key)] = self.modifiers[key]
                 self.modifiers = temp
-                temp = {}
-                for key in self.xpboost:
-                    temp[int(key)] = self.xpboost[key]
-                self.xpboost = temp
                 if returner:
                     return self
                 return False
@@ -231,17 +225,4 @@ class User:
                 break
             self.lvl[guildid] -= 1
             self.xp[guildid] += self.getxpreq(self.lvl[guildid])
-    
-    def get_xpboost(self, guildid):
-        if not guildid in self.xpboost:
-            self.xpboost[guildid] = 1
-        return self.xpboost[guildid]
-    
-    def set_xpboost(self, guildid, amount):
-        self.xpboost[guildid] = amount
-        self.save()
-    
-    def reset_xpboost(self, guildid):
-        self.xpboost[guildid] = 1
-        self.save()
     
