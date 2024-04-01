@@ -1066,8 +1066,14 @@ async def search(ctx, item: str):
         return
     
     embed = discord.Embed(title="Search Results", description="Here are the items that contain the search term")
-    for item in items:
-        embed.add_field(name=item, value=f"Price: {itemlist[item]['price']} {constructCurrName()}", inline=False)
+    for index, item in enumerate(items):
+        if index < 25:
+            embed.add_field(name=item, value=f"Price: {itemlist[item]['price']} {constructCurrName()}", inline=False)
+        else:
+            new_embed = discord.Embed(title="Search Results (Continued)", description="Here are the remaining items that contain the search term")
+            new_embed.add_field(name=item, value=f"Price: {itemlist[item]['price']} {constructCurrName()}", inline=False)
+            await ctx.respond(embed=new_embed)
+    
     await ctx.respond(embed=embed)
 
 
