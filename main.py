@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os
 from management.shop import Shop
 from management.modlist import GuildSetup
-from data.user import User, XPBoostTimestamp
+from data.user import User
 from colorizer.colorizer import Colorizer
 from linker import linker
 import discord
@@ -1043,14 +1043,6 @@ async def help(ctx, aspect: Option(str, "The aspect of the bot you need help wit
 
 @bot.event
 async def on_message(message):
-    xpbt = XPBoostTimestamp()
-    xpbt.load(message.author.id)
-    if xpbt.is_over(message.guild.id):
-        user = User()
-        user.load(message.author.id)
-        user.reset_xpboost(message.guild.id)
-        user.save()
-        XPBoostTimestamp.remove(message.author.id)
     if message.author.bot:
         return
     user = User()
@@ -1071,7 +1063,7 @@ async def on_message(message):
                 if mul > linker.eb_max:
                     mul = linker.eb_max
                 
-                xprandom = round(xprandom * mul * user.getmodifiers(message.guild.id) * user.get_xpboost(message.guild.id)) # multiply by the user's modifier
+                xprandom = round(xprandom * mul * user.getmodifiers(message.guild.id)) # multiply by the user's modifier
         resp = user.give_xp(xprandom, message.guild.id)
         print(f"Gave {xprandom} xp to {message.author.name}")
         LastMessage.set_lastmsgtime(message.author.id, message.guild.id)
