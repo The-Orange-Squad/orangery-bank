@@ -58,6 +58,12 @@ class Shop:
                 "desc": "A mystery box... The title says it all. What's inside?",
                 "type": "consumable",
                 "funcstr": "open_mbox(ctx)"
+            },
+            "📖 Book": {
+                "price": 270,
+                "desc": "The container of knowledge and wisdom. Boosts XP gain for 1 hour.",
+                "type": "boost",
+                "funcstr": "read_book(ctx)"
             }
         }
         self.processed = {}

@@ -15,6 +15,7 @@ class User:
         self.lvl = {}
         self.xp = {}
         self.modifiers = {}
+        self.xpboost = {}
 
     def save(self):
         with open(f"data/users/{self.id}.json", "w") as f:
@@ -41,6 +42,7 @@ class User:
                 self.lvl = data.get("lvl", {})
                 self.xp = data.get("xp", {})
                 self.modifiers = data.get("modifiers", {})
+                self.xpboost = data.get("xpboost", {})
                 temp = {}
                 # for all dicts, convert the keys to int
                 for key in self.balance:
@@ -66,6 +68,10 @@ class User:
                 for key in self.modifiers:
                     temp[int(key)] = self.modifiers[key]
                 self.modifiers = temp
+                temp = {}
+                for key in self.xpboost:
+                    temp[int(key)] = self.xpboost[key]
+                self.xpboost = temp
                 if returner:
                     return self
                 return False
