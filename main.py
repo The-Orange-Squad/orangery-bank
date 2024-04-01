@@ -872,9 +872,6 @@ def open_mbox(ctx):
     return embed
 
 
-
-
-
 @bot.slash_command(name='use', description='Use an item from your inventory')
 async def use(ctx, item: Option(str, "The item to use", required=True, autocomplete=discord.utils.basic_autocomplete(shopAutoComplete))):
     await ctx.defer()

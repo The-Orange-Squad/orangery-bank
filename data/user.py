@@ -230,3 +230,16 @@ class User:
                 break
             self.lvl[guildid] -= 1
             self.xp[guildid] += self.getxpreq(self.lvl[guildid])
+    
+    def get_xpboost(self, guildid):
+        if not guildid in self.xpboost:
+            self.xpboost[guildid] = 1
+        return self.xpboost[guildid]
+    
+    def set_xpboost(self, guildid, amount):
+        self.xpboost[guildid] = amount
+        self.save()
+    
+    def reset_xpboost(self, guildid):
+        self.xpboost[guildid] = 1
+        self.save()
