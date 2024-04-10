@@ -1078,7 +1078,7 @@ async def search(ctx, item: str):
 
 
 # This setup command wipes all the data for a specific user ID in the current guild
-@setupgroup.slash_command(name="wipeuser", description="Wipe all data for a specific user ID in the current guild")
+@setupgroup.command(name="wipeuser", description="Wipe all data for a specific user ID in the current guild")
 async def setup_wipeuser(ctx, user: discord.User):
     await ctx.defer()
     author = User()
