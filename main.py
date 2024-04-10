@@ -1097,10 +1097,10 @@ async def setup_wipeuser(ctx, user: discord.User):
         await ctx.respond(embed=embed)
         return
 
-    user = User()
-    user.load(user.id)
-    user.wipe(ctx.guild.id)
-    embed = discord.Embed(title="Success!", description=f"Wiped all data for user {user.name}", color=discord.Color.green())
+    user_ = User()
+    user_.load(user.id)
+    user_.wipe(ctx.guild.id)
+    embed = discord.Embed(title="Success!", description=f"Wiped all data for user {user.mention}", color=discord.Color.green())
     await ctx.respond(embed=embed)
 
 

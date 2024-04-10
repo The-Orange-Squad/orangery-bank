@@ -225,4 +225,14 @@ class User:
                 break
             self.lvl[guildid] -= 1
             self.xp[guildid] += self.getxpreq(self.lvl[guildid])
+        
+    def wipe(self, guildid):
+        # not just reset, completely wipe the user's data
+        del self.balance[guildid]
+        del self.inventory[guildid]
+        del self.msgc[guildid]
+        del self.lvl[guildid]
+        del self.xp[guildid]
+        del self.modifiers[guildid]
+        self.save()
     
