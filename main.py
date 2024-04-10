@@ -1103,6 +1103,7 @@ async def help(ctx, aspect: Option(str, "The aspect of the bot you need help wit
         embed.add_field(name="`/coinflip`", value="Flip a coin", inline=False)
         embed.add_field(name="`/dice`", value="Roll a dice", inline=False)
         embed.add_field(name="`/giftbox`", value="Open a gift box", inline=False)
+        embed.add_field(name="`/slots`", value="Play the slots (loss = you lose your money, partialfail = you get your money back, win = you win 10x your bet)", inline=False)
     elif aspect == "other":
         embed.description += "Other commands that don't fit into the other categories."
         embed.add_field(name="`/help`", value="Get help on how to use the bot", inline=False)
