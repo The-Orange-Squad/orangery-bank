@@ -1104,7 +1104,7 @@ async def setup_wipeuser(ctx, user: discord.User):
     await ctx.respond(embed=embed)
 
 @setupgroup.command(name="setmodifier", description="Set the modifier for a user")
-async def setup_setmodifier(ctx, user: discord.User, modifier: int):
+async def setup_setmodifier(ctx, user: discord.User, modifier: float):
     await ctx.defer()
     if modifier < 0:
         embed = discord.Embed(title="Error!", description="The modifier cannot be less than 0", color=discord.Color.red())
