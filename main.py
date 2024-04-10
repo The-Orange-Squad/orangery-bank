@@ -13,6 +13,7 @@ from discord.ui import Button, Select, View
 from messagecounter.msgc import LastMessage
 from management.rewardroles import RewardRoles
 import random
+import asyncio
 
 
 load_dotenv()
@@ -616,6 +617,65 @@ async def dice(ctx, bet: int, number: Option(int, "The number to bet on", requir
     elif outcome <= 0:
         embed = discord.Embed(title="Failure!", description=f"The dice landed on {results[0]}, {results[1]}, {results[2]}, {results[3]}, {results[4]}, {results[5]}! You lost {bet} {constructCurrName()}", color=discord.Color.red())
     await ctx.respond(embed=embed)
+
+@bot.slash_command(name='slots', description='Play the slots')
+async def slots(ctx, bet: int):
+    await ctx.defer()
+    author = User()
+    author.load(ctx.author.id)
+    if author.banned:
+        embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    user = User()
+    user.load(ctx.author.id)
+    if user.get_balance(ctx.guild.id) < bet:
+        embed = discord.Embed(title="Error!", description="You don't have enough money to bet this amount", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    if bet < 1:
+        embed = discord.Embed(title="Error!", description="You can't bet less than 1", color=discord.Color.red())
+        await ctx.respond(embed=embed)
+        return
+    user.edit_money(-bet, ctx.guild.id)
+    embed = discord.Embed(title="The slots are spinning...", description="Good luck!")
+    msg = await ctx.respond(embed=embed)
+    await asyncio.sleep(1)
+    pool = ["🍒", "🍋", "🍊", "7️⃣", "🪙", "💎", "♥️", "♠️", "🔔", "🍇", "🍓", "🍉"]
+    for i in range(5):
+        results = []
+        for i in range(3):
+            results.append(random.choice(pool))
+        
+        embed.description = f"Spinning... \n\n{results[0]} {results[1]} {results[2]}"
+        await msg.edit(embed=embed)
+        await asyncio.sleep(0.5)
+    
+    # calculate the win amount
+    # each emoji is 0.4x the bet
+    # if all emojis are the same, the win amount is 2x the bet
+    # if two emojis are the same, the win amount is 1.5x the bet
+    # if all emojis are different, the win amount is 0
+    if results[0] == results[1] == results[2]:
+        win = round(bet * 10)
+    elif results[0] == results[1] or results[0] == results[2] or results[1] == results[2]:
+        win = bet
+    elif results[0] != results[1] != results[2]:
+        win = 0
+
+    user.edit_money(win, ctx.guild.id)
+    if win > 0 and win > bet:
+        embed.title = "Success!"
+        embed.description = f"{results[0]} {results[1]} {results[2]}\n\nYou won {win} {constructCurrName()}!"
+        embed.color = discord.Color.green()
+    elif win == bet:
+        embed.title = "You didn't win, but at least you got your money back!"
+        embed.description = f"{results[0]} {results[1]} {results[2]}\n\nYou got your {bet} {constructCurrName()} back!"
+        embed.color = discord.Color.gold()
+    else:
+        embed.title = "Failure!"
+        embed.description = f"{results[0]} {results[1]} {results[2]}\n\nYou lost {bet} {constructCurrName()}"
+        embed.color = discord.Color.red()
+    
+    await msg.edit(embed=embed)
 
 @bot.user_command(name="View Balance", description="View the balance of the specified user")
 async def view_balance(ctx, user: discord.User):
