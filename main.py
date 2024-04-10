@@ -938,7 +938,7 @@ def read_book(ctx):
         embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
         return embed
     xp = random.randint(linker.w_rewardrange[0], linker.w_rewardrange[1])
-    user.give_xp(xp, ctx.guild.id)
+    user.give_xp(xp * user.get_mod(ctx.guild.id), ctx.guild.id)
     embed = discord.Embed(title="Read a book!", description=f"Read a book and received {xp} XP", color=discord.Color.green())
     return embed
 
