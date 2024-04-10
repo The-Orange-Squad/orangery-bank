@@ -972,8 +972,8 @@ async def setup_ignorechannel(ctx):
         await ctx.respond(embed=embed)
         return
     
-    if setup.settings["modrole"] not in [role.id for role in ctx.author.roles] and setup.settings["adminrole"] not in [role.id for role in ctx.author.roles]:
-        embed = discord.Embed(title="Error!", description="You need to have the moderator role or the administrator role to use this command", color=discord.Color.red())
+    if setup.settings["adminrole"] not in [role.id for role in ctx.author.roles]:
+        embed = discord.Embed(title="Error!", description="You need to have the administrator role to use this command", color=discord.Color.red())
         await ctx.respond(embed=embed)
         return
 
@@ -1000,8 +1000,8 @@ async def setup_unignorechannel(ctx):
         await ctx.respond(embed=embed)
         return
     
-    if setup.settings["modrole"] not in [role.id for role in ctx.author.roles] and setup.settings["adminrole"] not in [role.id for role in ctx.author.roles]:
-        embed = discord.Embed(title="Error!", description="You need to have the moderator role or the administrator role to use this command", color=discord.Color.red())
+    if setup.settings["adminrole"] not in [role.id for role in ctx.author.roles]:
+        embed = discord.Embed(title="Error!", description="You need to have the administrator role to use this command", color=discord.Color.red())
         await ctx.respond(embed=embed)
         return
 
@@ -1078,7 +1078,7 @@ async def search(ctx, item: str):
 
 
 # This setup command wipes all the data for a specific user ID in the current guild
-@bot.slash_command(name="setup_wipeuser", description="Wipe all data for a specific user ID in the current guild")
+@setupgroup.slash_command(name="wipeuser", description="Wipe all data for a specific user ID in the current guild")
 async def setup_wipeuser(ctx, user: discord.User):
     await ctx.defer()
     author = User()
