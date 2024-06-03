@@ -412,8 +412,11 @@ async def rank(ctx, user: Option(User, "The user to check the rank of", required
         lvl = user_.get_lvl(ctx.guild.id)
         rr = RewardRoles()
         rr.load()
-        rrlist = rr.roles[ctx.guild.id]
-        maxreward = max(rrlist.keys())
+        try:
+            rrlist = rr.roles[ctx.guild.id]
+        except:
+            rrlist = {}
+        maxreward = max(rrlist.keys() or [0])
         
         next_reward_level = None
         for reward_level in sorted(rrlist.keys()):
@@ -421,8 +424,10 @@ async def rank(ctx, user: Option(User, "The user to check the rank of", required
                 next_reward_level = reward_level
                 break
         
-        if next_reward_level is None:
+        if next_reward_level is None and rrlist != {}:
             adata = f"\nYou have reached the maximum rewarded level for this server ({maxreward})"
+        elif rrlist == {}:
+            adata = "\nNo rewards have been set for this server"
         else:
             adata = f"\nNext Reward: Level {next_reward_level}\n\nProgress:\n {generatePB(lvl, next_reward_level)}"
         
