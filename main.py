@@ -954,8 +954,10 @@ def read_book(ctx):
         embed = discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
         return embed
     xp = random.randint(linker.w_rewardrange[0], linker.w_rewardrange[1])
-    user.give_xp(xp * user.get_mod(ctx.guild.id), ctx.guild.id)
+    newlvl = user.give_xp(xp * user.get_mod(ctx.guild.id), ctx.guild.id)
     embed = discord.Embed(title="Read a book!", description=f"Read a book and received {xp} XP", color=discord.Color.green())
+    if newlvl == "newlvl":
+        embed.add_field(name="Level Up!", value=f"You leveled up to level {user.get_lvl(ctx.guild.id)}!", inline=False)
     return embed
 
 
