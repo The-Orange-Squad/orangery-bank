@@ -1,7 +1,3 @@
-
-
-
-
 class Shop:
     def __init__(self):
         self.items = {
@@ -64,6 +60,48 @@ class Shop:
                 "desc": "The container of knowledge and wisdom. Gives you some XP.",
                 "type": "consumable",
                 "funcstr": "read_book(ctx)"
+            },
+            "🎣 Fishing Rod": {
+                "price": 750,
+                "desc": "A sturdy fishing rod. Try your luck at catching some fish!",
+                "type": "tool",
+                "funcstr": "go_fishing(ctx)"
+            },
+            "⛏️ Pickaxe": {
+                "price": 1000,
+                "desc": "A reliable pickaxe. Mine for valuable resources!",
+                "type": "tool",
+                "funcstr": "go_mining(ctx)"
+            },
+            "🌱 Magic Seeds": {
+                "price": 300,
+                "desc": "Mysterious seeds that grow into... something?",
+                "type": "consumable",
+                "funcstr": "plant_magic_seeds(ctx)"
+            },
+            "🔮 Crystal Ball": {
+                "price": 1500,
+                "desc": "A mystical crystal ball. Gaze into the future!",
+                "type": "tool",
+                "funcstr": "use_crystal_ball(ctx)"
+            },
+            "🧪 Alchemy Kit": {
+                "price": 2000,
+                "desc": "A set of tools for magical experiments. What will you create?",
+                "type": "tool",
+                "funcstr": "perform_alchemy(ctx)"
+            },
+            "🎭 Disguise Kit": {
+                "price": 1200,
+                "desc": "A kit full of props and makeup. Perfect for going undercover!",
+                "type": "tool",
+                "funcstr": "use_disguise_kit(ctx)"
+            },
+            "🎟️ Lucky Ticket": {
+                "price": 1000,
+                "desc": "A mysterious ticket. Will it bring you fortune?",
+                "type": "consumable",
+                "funcstr": "use_lucky_ticket(ctx)"
             }
         }
         self.processed = {}

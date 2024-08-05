@@ -961,6 +961,152 @@ def read_book(ctx):
     return embed
 
 
+def go_fishing(ctx):
+    user = User()
+    user.load(ctx.author.id)
+    if user.banned:
+        return discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    
+    fish_types = ["🐟 Common Fish", "🐠 Tropical Fish", "🦈 Shark", "🐡 Pufferfish", "🦑 Squid"]
+    caught = random.choice(fish_types)
+    value = random.randint(50, 500)
+    
+    user.add_item(caught, 1, ctx.guild.id)
+    user.edit_money(value, ctx.guild.id)
+    
+    embed = discord.Embed(title="Gone Fishing!", description=f"You caught a {caught} and sold it for {value} {constructCurrName()}!", color=discord.Color.blue())
+    return embed
+
+def go_mining(ctx):
+    user = User()
+    user.load(ctx.author.id)
+    if user.banned:
+        return discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    
+    minerals = ["💎 Diamond", "🥇 Gold Nugget", "🥈 Silver Ore", "🔷 Sapphire", "♦️ Ruby"]
+    mined = random.choice(minerals)
+    value = random.randint(100, 1000)
+    
+    user.add_item(mined, 1, ctx.guild.id)
+    user.edit_money(value, ctx.guild.id)
+    
+    embed = discord.Embed(title="Mining Adventure!", description=f"You mined a {mined} and sold it for {value} {constructCurrName()}!", color=discord.Color.dark_gray())
+    return embed
+
+def plant_magic_seeds(ctx):
+    user = User()
+    user.load(ctx.author.id)
+    if user.banned:
+        return discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    
+    outcomes = [
+        ("🌳 Money Tree", f"grew into a Money Tree! You harvested {random.randint(300, 1000)} {constructCurrName()}!"),
+        ("🌻 XP Flower", f"blossomed into an XP Flower! You gained {random.randint(100, 500)} XP!"),
+        ("🍄 Wisdom Mushroom", "turned into a Wisdom Mushroom! Your next adventure will be extra rewarding!"),
+        ("🌵 Thorny Cactus", "became a Thorny Cactus. Ouch! You lost a small amount of money tending to it.")
+    ]
+    
+    result, description = random.choice(outcomes)
+    
+    if "Money Tree" in result:
+        value = int(description.split()[-2])
+        user.edit_money(value, ctx.guild.id)
+    elif "XP Flower" in result:
+        xp = int(description.split()[-3])
+        user.give_xp(xp, ctx.guild.id)
+    elif "Thorny Cactus" in result:
+        loss = random.randint(50, 200)
+        user.edit_money(-loss, ctx.guild.id)
+        description += f" (-{loss} {constructCurrName()})"
+    
+    embed = discord.Embed(title="Magic Seeds Planted!", description=f"Your magic seeds {description}", color=discord.Color.green())
+    return embed
+
+def use_crystal_ball(ctx):
+    user = User()
+    user.load(ctx.author.id)
+    if user.banned:
+        return discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    
+    futures = [
+        "You will come into great fortune soon.",
+        "A challenging adventure awaits you.",
+        "An unexpected friend will become very important.",
+        "Your next big decision will lead to success.",
+        "A small mistake will lead to a big opportunity."
+    ]
+    
+    prediction = random.choice(futures)
+    bonus = random.randint(50, 200)
+    user.edit_money(bonus, ctx.guild.id)
+    
+    embed = discord.Embed(title="Crystal Ball Prediction", description=f"The crystal ball shows: {prediction}\nFor this glimpse into the future, you've been awarded {bonus} {constructCurrName()}!", color=discord.Color.purple())
+    return embed
+
+def perform_alchemy(ctx):
+    user = User()
+    user.load(ctx.author.id)
+    if user.banned:
+        return discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    
+    experiments = [
+        ("🧪 Health Potion", "restores vitality", 300),
+        ("💨 Invisibility Powder", "grants stealth", 500),
+        ("🔥 Fire Resistance Elixir", "protects from flames", 400),
+        ("⚡ Lightning in a Bottle", "harnesses electricity", 600),
+        ("🌈 Prismatic Dye", "changes colors magically", 250)
+    ]
+    
+    result, effect, value = random.choice(experiments)
+    user.add_item(result, 1, ctx.guild.id)
+    user.edit_money(value, ctx.guild.id)
+    
+    embed = discord.Embed(title="Alchemy Experiment", description=f"You created {result} which {effect}!\nYou can sell this for {value} {constructCurrName()}.", color=discord.Color.gold())
+    return embed
+
+def use_disguise_kit(ctx):
+    user = User()
+    user.load(ctx.author.id)
+    if user.banned:
+        return discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    
+    disguises = ["👑 Royalty", "🕵️ Secret Agent", "👨‍🍳 Master Chef", "🧙 Wizard", "🤖 Robot"]
+    chosen = random.choice(disguises)
+    bonus = random.randint(100, 500)
+    user.edit_money(bonus, ctx.guild.id)
+    
+    embed = discord.Embed(title="Undercover Mission", description=f"You disguised yourself as {chosen} and completed a secret mission!\nReward: {bonus} {constructCurrName()}", color=discord.Color.teal())
+    return embed
+
+def use_lucky_ticket(ctx):
+    user = User()
+    user.load(ctx.author.id)
+    if user.banned:
+        return discord.Embed(title="Rejected your request.", description="You are banned from using the bot", color=discord.Color.red())
+    
+    outcomes = [
+        ("🎉 Jackpot", f"You won the jackpot! {random.randint(1000, 5000)} {constructCurrName()} have been added to your account!"),
+        ("💰 Cash Prize", f"You won a cash prize of {random.randint(100, 999)} {constructCurrName()}!"),
+        ("🎁 Mystery Box", "You won a Mystery Box!"),
+        ("📚 XP Boost", f"You received an XP boost of {random.randint(50, 250)} XP!"),
+        ("😢 No Luck", "Sorry, this ticket wasn't a winner. Better luck next time!")
+    ]
+    
+    result, description = random.choice(outcomes)
+    
+    if "Jackpot" in result or "Cash Prize" in result:
+        value = int(description.split()[-5])
+        user.edit_money(value, ctx.guild.id)
+    elif "Mystery Box" in result:
+        user.add_item("Mystery Box", 1, ctx.guild.id)
+    elif "XP Boost" in result:
+        xp = int(description.split()[-3])
+        user.give_xp(xp, ctx.guild.id)
+    
+    embed = discord.Embed(title="Lucky Ticket Result", description=description, color=discord.Color.gold())
+    return embed
+
+
 @bot.slash_command(name='use', description='Use an item from your inventory')
 async def use(ctx, item: Option(str, "The item to use", required=True, autocomplete=discord.utils.basic_autocomplete(shopAutoComplete))):
     await ctx.defer()
